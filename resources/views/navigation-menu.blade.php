@@ -15,6 +15,18 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <x-nav-link href="{{ route('gestion-equipos') }}" :active="request()->routeIs('gestion-equipos')">
+                        {{ __('Gestion Equipos') }}
+                    </x-nav-link>
+
+                    <x-nav-link href="{{ route('gestion-usuarios') }}" :active="request()->routeIs('gestion-usuarios')">
+                        {{ __('Gestion Usuarios') }}
+                    </x-nav-link>
+
+                    <x-nav-link href="{{ route('gestion-clientes') }}" :active="request()->routeIs('gestion-clientes')">
+                        {{ __('Gestion Clientes') }}
+                    </x-nav-link>
                 </div>
             </div>
 
