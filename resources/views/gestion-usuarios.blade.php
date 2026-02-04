@@ -6,19 +6,27 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" x-data="{ showModal: false, showAuditoriaModal: false }">
-            
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"
+            x-data="{ showModal: false, showCrearModal: false, showAuditoriaModal: false }">
+
             <!-- Botones para abrir los modales -->
             <div class="flex flex-wrap justify-center gap-4">
-                <x-button @click="showModal = true" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('Crear / Modificar Usuario') }}
+                <x-button @click="showCrearModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                    {{ __('CREAR USUARIO') }}
                 </x-button>
 
-              
+                <x-button @click="showModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                    {{ __('MODIFICAR USUARIO') }}
+                </x-button>
             </div>
 
             <!-- Modal: User Management -->
-            <x-user-management-modal />           
+            <x-user-management-modal />
+
+            <!-- Modal: Crear Usuario -->
+            <x-crear-usuario-modal />
 
         </div>
     </div>

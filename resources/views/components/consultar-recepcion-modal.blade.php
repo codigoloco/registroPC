@@ -1,0 +1,149 @@
+<div x-show="showConsultarModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0">
+
+    <!-- Fondo Oscuro -->
+    <div x-show="showConsultarModal" class="fixed inset-0 transform transition-all"
+        x-on:click="showConsultarModal = false" x-transition:enter="ease-out duration-300"
+        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0">
+        <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
+    </div>
+
+    <!-- Panel del Modal -->
+    <div x-show="showConsultarModal"
+        class="mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:max-w-4xl sm:mx-auto"
+        x-transition:enter="ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+
+        <!-- Encabezado -->
+        <div class="bg-blue-600 text-white px-6 py-4 flex items-center justify-between shadow-sm">
+            <span class="text-lg font-semibold">{{ __('Consulta / Modificar Registro de Recepción') }}</span>
+            <button @click="showConsultarModal = false" class="text-white hover:text-gray-200 focus:outline-none">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-8 space-y-8">
+            <!-- Buscador -->
+            <div class="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-xl border border-blue-200 dark:border-blue-900">
+                <div class="max-w-md mx-auto">
+                    <x-label value="Buscar por ID Caso"
+                        class="mb-2 text-center font-bold text-blue-600 dark:text-blue-400" />
+                    <div class="flex gap-2">
+                        <x-input type="text" placeholder="Ej: 1001" class="w-full" />
+                        <x-button class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </x-button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Sección Recepción -->
+                <div class="space-y-4">
+                    <h3
+                        class="font-bold text-gray-800 dark:text-gray-100 border-b dark:border-gray-700 pb-2 flex items-center gap-2">
+                        <span
+                            class="bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 p-1 rounded">01</span>
+                        {{ __('Datos de Recepción') }}
+                    </h3>
+
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <x-label value="ID Equipo" />
+                            <x-input type="text" name="id_equipo" class="w-full h-9" />
+                        </div>
+                        <div>
+                            <x-label value="ID Usuario Recepción" />
+                            <x-input type="text" name="id_usuario_recepcion" class="w-full h-9" />
+                        </div>
+                        <div>
+                            <x-label value="ID Técnico Asignado" />
+                            <x-input type="text" name="id_usuario_tecnico_asignado" class="w-full h-9" />
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <x-label value="Tipo de Atención" />
+                                <select name="tipo_atencion"
+                                    class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-9">
+                                    <option value="presupuesto">Presupuesto</option>
+                                    <option value="garantia">Garantía</option>
+                                </select>
+                            </div>
+                            <div>
+                                <x-label value="Pago Realizado" />
+                                <select name="pago"
+                                    class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-9">
+                                    <option value="si">Si</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <x-label value="Falla Técnica" />
+                            <textarea name="falla_tecnica"
+                                class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-20"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección Salida -->
+                <div class="space-y-4">
+                    <h3
+                        class="font-bold text-gray-800 dark:text-gray-100 border-b dark:border-gray-700 pb-2 flex items-center gap-2">
+                        <span
+                            class="bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300 p-1 rounded">02</span>
+                        {{ __('Datos de Salida') }}
+                    </h3>
+
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <x-label value="ID Usuario Entrega" />
+                            <x-input type="text" name="id_usuario_entrega" class="w-full h-9" />
+                        </div>
+                        <div>
+                            <x-label value="Entregado por" />
+                            <select name="deposito"
+                                class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-9">
+                                <option value="Tecnico">Técnico</option>
+                                <option value="Deposito">Depósito</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div
+                        class="mt-8 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-100 dark:border-yellow-900 rounded-lg">
+                        <p class="text-sm text-yellow-700 dark:text-yellow-400">
+                            <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {{ __('Modifique los campos necesarios y presione Guardar para actualizar el registro completo.') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div
+            class="bg-gray-50 dark:bg-gray-700 px-6 py-6 flex justify-center gap-4 border-t border-gray-200 dark:border-gray-600">
+            <x-button
+                class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 px-10">
+                {{ __('Guardar Cambios') }}
+            </x-button>
+            <x-secondary-button class="px-10" @click="showConsultarModal = false">
+                {{ __('Cancelar') }}
+            </x-secondary-button>
+        </div>
+
+    </div>
+</div>
