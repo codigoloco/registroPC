@@ -13,19 +13,27 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('Graficas y Estadisticas') }}
                     </x-nav-link>
 
                     <x-nav-link href="{{ route('gestion-equipos') }}" :active="request()->routeIs('gestion-equipos')">
-                        {{ __('Gestion Equipos') }}
+                        {{ __('Equipos') }}
                     </x-nav-link>
 
                     <x-nav-link href="{{ route('gestion-usuarios') }}" :active="request()->routeIs('gestion-usuarios')">
-                        {{ __('Gestion Usuarios') }}
+                        {{ __('Usuarios') }}
                     </x-nav-link>
 
                     <x-nav-link href="{{ route('gestion-clientes') }}" :active="request()->routeIs('gestion-clientes')">
-                        {{ __('Gestion Clientes') }}
+                        {{ __('Clientes') }}
+                    </x-nav-link>
+
+                    <x-nav-link href="{{ route('gestion-casos') }}" :active="request()->routeIs('gestion-casos')">
+                        {{ __('Casos') }}
+                    </x-nav-link>
+
+                    <x-nav-link href="{{ route('gestion-auditoria') }}" :active="request()->routeIs('gestion-auditoria')">
+                        {{ __('Auditoria') }}
                     </x-nav-link>
                 </div>
             </div>

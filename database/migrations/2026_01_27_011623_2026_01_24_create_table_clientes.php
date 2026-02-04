@@ -18,7 +18,7 @@ return new class extends Migration
         }
 
         Schema::create('clientes', function (Blueprint $table) {
-            $table->integer('id')->autoIncrement();            
+            $table->integer('id')->unique();            
             $table->string('nombre', 100);
             $table->text('direccion');            
             $table->enum('tipo_cliente', ['natural', 'juridico','Gubernamental']);

@@ -48,7 +48,7 @@
                     
                     <!-- Serial -->
                     <div class="grid grid-cols-3 gap-4 items-center">
-                        <label class="text-sm text-gray-700 dark:text-gray-300">Serial</label>
+                        <label class="text-sm text-gray-700 dark:text-gray-300">Cliente</label>
                         <div class="col-span-2">
                              <x-input type="text" class="w-full" />
                         </div>
@@ -65,19 +65,17 @@
 
                     <!-- Falla Reportada -->
                     <div class="grid grid-cols-3 gap-4 items-center">
-                        <label class="text-sm text-gray-700 dark:text-gray-300">Falla Reportada</label>
+                        <label class="text-sm text-gray-700 dark:text-gray-300">Descripción Falla</label>
                         <div class="col-span-2">
-                             <x-input type="text" class="w-full" />
+                             <x-input type="text" name="descripcion_falla" class="w-full" maxlength="100" required />
                         </div>
                     </div>
 
-                    <!-- Pieza Sugerida (Select) -->
+                    <!-- Pieza Sugerida -->
                     <div class="grid grid-cols-3 gap-4 items-center">
                         <label class="text-sm text-gray-700 dark:text-gray-300">Pieza Sugerida</label>
                          <div class="col-span-2">
-                             <select class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
-                                <option></option>
-                             </select>
+                             <x-input type="text" name="pieza_sugerida" class="w-full" maxlength="100" placeholder="Opcional" />
                         </div>
                     </div>
 
@@ -85,8 +83,22 @@
                     <div class="grid grid-cols-3 gap-4 items-center">
                         <label class="text-sm text-gray-700 dark:text-gray-300">Forma de Atención</label>
                          <div class="col-span-2">
-                             <select class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
-                                <option></option>
+                             <select name="forma_de_atencion" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
+                                <option value="encomienda">Encomienda</option>
+                                <option value="presencial">Presencial</option>
+                             </select>
+                        </div>
+                    </div>
+
+                    <!-- Estatus (Select) -->
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <label class="text-sm text-gray-700 dark:text-gray-300">Estatus</label>
+                         <div class="col-span-2">
+                             <select name="estatus" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
+                                <option value="asignado">Asignado</option>
+                                <option value="espera">Espera</option>
+                                <option value="reparado">Reparado</option>
+                                <option value="entregado">Entregado</option>
                              </select>
                         </div>
                     </div>

@@ -57,42 +57,28 @@
             <!-- Sección: Detalles del Equipo -->
             <div>
                  <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4">{{ __('Detalles del Equipo') }}</h3>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Fila 1 -->
+                 <div class="grid grid-cols-1 gap-6">
+                    <!-- Serial -->
                     <div>
-                        <x-input type="text" placeholder="{{ __('Nombre') }}" class="w-full" />
-                    </div>
-                    <div>
-                        <x-input type="text" placeholder="{{ __('Cédula') }}" class="w-full" />
+                        <x-label value="Serial del Equipo" class="mb-1" />
+                        <x-input type="text" name="serial_equipo" placeholder="Serial" class="w-full" required />
                     </div>
                     
-                    <!-- Fila 2 -->
+                    <!-- Modelo -->
                     <div>
-                        <x-input type="text" placeholder="{{ __('Serial') }}" class="w-full" />
-                    </div>
-                    <div>
-                         <x-input type="text" placeholder="{{ __('Modelo') }}" class="w-full" />
+                         <x-label value="ID Modelo" class="mb-1" />
+                         <x-input type="text" name="id_modelo" placeholder="ID Modelo" class="w-full" required />
                     </div>
 
-                    <!-- Fila 3 -->
+                    <!-- Tipo -->
                     <div>
-                        <x-input type="text" placeholder="{{ __('Teléfono') }}" class="w-full" />
-                    </div>
-                    <div>
-                         <x-input type="text" placeholder="{{ __('Teléfono') }}" class="w-full" />
-                    </div>
-
-                    <!-- Fila 4 -->
-                    <div>
-                         <select class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm w-full">
-                            <option value="">{{ __('Tipo') }}</option>
-                            <option value="pc">PC</option>
-                            <option value="laptop">Laptop</option>
-                            <option value="printer">Impresora</option>
+                         <x-label value="ID Tipo de Equipo" class="mb-1" />
+                         <select name="id_tipo" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm w-full" required>
+                            <option value="">{{ __('Seleccione Tipo') }}</option>
+                            <option value="PC">PC</option>
+                            <option value="Laptop">Laptop</option>
+                            <option value="Impresora">Impresora</option>
                          </select>
-                    </div>
-                    <div>
-                         <x-input type="text" placeholder="{{ __('Dirección') }}" class="w-full" />
                     </div>
                  </div>
             </div>

@@ -48,43 +48,26 @@
 
             <!-- Detalles del Caso -->
             <div>
-                <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-base">{{ __('Detalles del Caso') }}</h3>
+                <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-base">{{ __('Documentar Uso de Pieza') }}</h3>
                 
                 <div class="grid grid-cols-3 gap-4 mb-4 items-center">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 font-medium">ID Diagnóstico:</label>
+                    <label class="text-sm text-gray-600 dark:text-gray-400 font-medium">Pieza (ID):</label>
                     <div class="col-span-2">
-                        <x-input type="text" class="w-full bg-gray-50 dark:bg-gray-900" readonly />
+                        <x-input type="number" name="id_pieza_soporte" placeholder="ID Pieza Soporte" class="w-full" required />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-4 mb-4 items-center">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 font-medium">Falla Reportada:</label>
+                    <label class="text-sm text-gray-600 dark:text-gray-400 font-medium">Cantidad:</label>
                     <div class="col-span-2">
-                         <x-input type="text" class="w-full bg-gray-50 dark:bg-gray-900" readonly />
+                         <x-input type="number" name="cantidad" placeholder="Cantidad" class="w-full" min="1" required />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-4 mb-4 items-center">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 font-medium">Pieza Sugerida:</label>
+                    <label class="text-sm text-gray-600 dark:text-gray-400 font-medium">Observación:</label>
                     <div class="col-span-2">
-                         <x-input type="text" class="w-full bg-gray-50 dark:bg-gray-900" readonly />
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-3 gap-4 mb-4 items-center">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 font-medium">Cambiar Estatus:</label>
-                    <div class="col-span-2 flex gap-2">
-                         <div class="flex-grow">
-                            <!-- Custom Select Simulation or basic select -->
-                            <select class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                                <option>En Progreso</option>
-                                <option>Esperando Pieza</option>
-                                <option>Completado</option>
-                            </select>
-                         </div>
-                         <x-secondary-button class="bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200">
-                             {{ __('Cerrar Caso') }}
-                         </x-secondary-button>
+                        <textarea name="observacion" placeholder="Observación (Opcional)" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-24"></textarea>
                     </div>
                 </div>
             </div>

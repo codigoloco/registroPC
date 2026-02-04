@@ -32,51 +32,47 @@
 
         <div class="p-8">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Columna Izquierda: Consultar Caso -->
-                <div>
-                    <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-lg">{{ __('Consultar Caso') }}</h3>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <x-label value="ID Caso" class="mb-1 text-gray-700" />
-                            <x-input type="text" placeholder="ID Caso" class="w-full" />
-                        </div>
-
-                        <div class="flex gap-2 items-end">
-                            <div class="flex-grow">
-                                <x-input type="text" placeholder="ID Técnico Asignado" class="w-full" />
-                            </div>
-                            <x-button class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500">
-                                {{ __('Consultar') }}
-                            </x-button>
-                        </div>
-
-                         <div class="mt-2">
-                            <label class="flex items-center cursor-pointer">
-                                <x-checkbox />
-                                <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Titular por posesión de equipo</span>
-                            </label>
-                        </div>
-
-                        <div class="flex flex-wrap gap-2 mt-6">
-                            <x-button class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-xs px-4">
-                                {{ __('Generar Nota Recepción') }}
-                            </x-button>
-                            <x-secondary-button class="text-xs px-4">
-                                {{ __('Pago Diagnóstico') }}
-                            </x-secondary-button>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Columna 1 -->
+                <div class="space-y-4">
+                    <div>
+                        <x-label value="ID Caso" class="mb-1" />
+                        <x-input type="text" name="id_caso" placeholder="ID Caso" class="w-full" required />
+                    </div>
+                    <div>
+                        <x-label value="ID Equipo" class="mb-1" />
+                        <x-input type="text" name="id_equipo" placeholder="ID Equipo" class="w-full" required />
+                    </div>
+                    <div>
+                         <x-label value="ID Usuario Recepción" class="mb-1" />
+                         <x-input type="text" name="id_usuario_recepcion" placeholder="ID Usuario" class="w-full" required />
+                    </div>
+                    <div>
+                        <x-label value="ID Técnico Asignado" class="mb-1" />
+                        <x-input type="text" name="id_usuario_tecnico_asignado" placeholder="ID Técnico" class="w-full" required />
                     </div>
                 </div>
 
-                <!-- Columna Derecha: Asignar Técnico -->
-                <div>
-                    <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-lg">{{ __('Asignar Técnico') }}</h3>
-                    <div class="space-y-4">
-                        <x-input type="text" placeholder="Entradas" class="w-full" />
-                        <x-input type="text" class="w-full" />
-                        <!-- Empty space filler to match height if needed -->
+                <!-- Columna 2 -->
+                <div class="space-y-4">
+                    <div>
+                        <x-label value="Tipo de Atención" class="mb-1" />
+                        <select name="tipo_atencion" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10" required>
+                            <option value="presupuesto">Presupuesto</option>
+                            <option value="garantia">Garantía</option>
+                        </select>
+                    </div>
+                     <div>
+                        <x-label value="Pago Realizado" class="mb-1" />
+                        <select name="pago" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
+                            <option value="">Seleccione...</option>
+                            <option value="si">Si</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div>
+                        <x-label value="Falla Técnica" class="mb-1" />
+                        <x-input type="text" name="falla_tecnica" placeholder="Descripción de la falla" class="w-full" required />
                     </div>
                 </div>
             </div>

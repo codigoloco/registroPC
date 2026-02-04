@@ -6,22 +6,14 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" x-data="{ showModal: false, showEquipoModal: false, showRecepcionModal: false, showDocumentarModal: false, showRegistrarCasoModal: false }">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" x-data="{ showModal: false, showEquipoModal: false, showRecepcionModal: false}">
             
             <!-- Botones para abrir los modales -->
             <div class="flex flex-wrap justify-center gap-4">
                 <x-button @click="showRecepcionModal = true" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
                     {{ __('Registrar Recepción') }}
                 </x-button>
-                
-                 <x-button @click="showRegistrarCasoModal = true" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('Registrar Caso') }}
-                </x-button>
-
-                <x-button @click="showDocumentarModal = true" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('Documentar Caso') }}
-                </x-button>
-
+ 
                 <x-button @click="showModal = true" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
                     {{ __('Registrar Salida de Equipo') }}
                 </x-button>
@@ -31,12 +23,6 @@
                 </x-button>
             </div>
             
-            <!-- Modal Component: Registrar Caso (Nuevo) -->
-            <x-registrar-caso-modal />
-
-            <!-- Modal Component: Documentar Caso -->
-            <x-documentar-caso-modal />
-
             <!-- Modal Component: Recepción -->
             <x-registrar-recepcion-equipo-modal />
 

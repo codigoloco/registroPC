@@ -26,5 +26,13 @@ Route::middleware([
     Route::get('/gestion-clientes', function () {
         return view('gestion-clientes');
     })->name('gestion-clientes');
+
+    Route::get('/gestion-casos', function () {
+        return view('gestion-casos');
+    })->name('gestion-casos');
+
+    Route::get('/gestion-auditoria', function () {
+        return view('gestion-auditoria');
+    })->name('gestion-auditoria');
 });
 

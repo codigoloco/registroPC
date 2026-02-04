@@ -6,17 +6,23 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" x-data="{ showModal: false }">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" x-data="{ showModal: false, showModalModificarClientes: false }">
             
             <!-- Botones de Acción -->
             <div class="flex flex-wrap justify-center gap-4">
                 <x-button @click="showModal = true" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('Registrar / Modificar Cliente') }}
+                    {{ __('Registrar Cliente') }}
+                </x-button>
+
+                <x-button @click="showModalModificarClientes = true" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                    {{ __('Modificar Clientes') }}
                 </x-button>
             </div>
 
             <!-- Modal Component -->
-            <x-modificar-registrar-clientes />
+            <x-registrar-clientes />
+
+            <x-modificar-clientes />
 
         </div>
     </div>

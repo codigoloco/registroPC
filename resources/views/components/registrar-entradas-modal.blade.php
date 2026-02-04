@@ -27,63 +27,42 @@
         </div>
 
         <div class="p-8 space-y-8">
-            
-            <!-- Sección: Consultar Caso / Cliente -->
-            <div>
-                <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 border-b dark:border-gray-700 pb-2">{{ __('Consultar Caso / Cliente') }}</h3>
-                <div class="flex flex-wrap items-end gap-4">
-                    <div class="w-full md:w-1/4">
-                        <x-label for="id_caso" value="{{ __('ID Caso') }}" class="sr-only" />
-                        <x-input id="id_caso" type="text" placeholder="{{ __('ID Caso') }}" class="w-full" />
-                    </div>
-                    <div class="w-full md:w-1/4">
-                        <x-label for="id_cliente" value="{{ __('ID Cliente') }}" class="sr-only" />
-                        <x-input id="id_cliente" type="text" placeholder="{{ __('ID Cliente') }}" class="w-full" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Columna 1 -->
+                <div class="space-y-4">
+                    <div>
+                        <x-label value="ID Caso" class="mb-1" />
+                        <x-input type="text" name="id_caso" placeholder="ID Caso" class="w-full" required />
                     </div>
                     <div>
-                        <x-button class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500">
-                            {{ __('Consultar Cliente') }}
-                        </x-button>
+                        <x-label value="ID Equipo" class="mb-1" />
+                        <x-input type="text" name="id_equipo" placeholder="ID Equipo" class="w-full" required />
+                    </div>
+                </div>
+
+                <!-- Columna 2 -->
+                <div class="space-y-4">
+                     <div>
+                         <x-label value="ID Usuario Entrega" class="mb-1" />
+                         <x-input type="text" name="id_usuario_entrega" placeholder="ID Usuario" class="w-full" required />
+                    </div>
+                    <div>
+                        <x-label value="Área de Depósito" class="mb-1" />
+                        <select name="deposito" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
+                            <option value="tecnico">Técnico</option>
+                            <option value="deposito">Depósito</option>
+                        </select>
                     </div>
                 </div>
             </div>
-
-            <!-- Sección: Detalles del Caso -->
+            
+            <!-- Generar Nota -->
             <div>
-                 <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 border-b dark:border-gray-700 pb-2">{{ __('Detalles del Caso') }}</h3>
-                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <x-label for="estado_caso" value="{{ __('Estado del Caso') }}" class="mb-1" />
-                        <x-input id="estado_caso" type="text" class="w-full bg-gray-50 dark:bg-gray-900" readonly />
-                    </div>
-                    <div>
-                        <x-label for="cliente_nombre" value="{{ __('Cliente') }}" class="mb-1" />
-                        <x-input id="cliente_nombre" type="text" placeholder="ORCO" class="w-full" />
-                    </div>
-                     <div>
-                        <x-label for="equipo_info" value="{{ __('Equipo (Serial/Modelo)') }}" class="mb-1" />
-                        <x-input id="equipo_info" type="text" placeholder="{{ __('Equipo (Serial/Modelo)') }}" class="w-full" />
-                    </div>
-                 </div>
-            </div>
-
-            <!-- Sección: Generar / Validar -->
-            <div>
-                 <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 border-b dark:border-gray-700 pb-2">{{ __('Generar / Validar') }}</h3>
-                 <div class="space-y-6">
-                    <label for="validar_estatus" class="inline-flex items-center cursor-pointer">
-                        <x-checkbox id="validar_estatus" checked />
-                        <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Validar Estatus de Entrega') }}</span>
-                    </label>
-
-                    <div class="flex flex-wrap gap-4">
-                        <x-button class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500">
-                            {{ __('Generar Nota de Entrega') }}
-                        </x-button>
-                        <x-secondary-button>
-                            {{ __('Imprimir Nota') }}
-                        </x-secondary-button>
-                    </div>
+                 <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 border-b dark:border-gray-700 pb-2">{{ __('Acciones') }}</h3>
+                 <div class="flex gap-4">
+                     <x-button class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500">
+                        {{ __('Generar Nota de Entrega') }}
+                     </x-button>
                  </div>
             </div>
         </div>

@@ -36,42 +36,23 @@
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
                 <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-base">{{ __('Filtros de Consulta') }}</h3>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <!-- Row 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <!-- Usuario -->
                     <div>
-                        <div class="flex justify-between">
-                             <x-label value="Usuario:" class="mb-1" />
-                        </div>
-                        <x-input type="text" placeholder="Caso:" class="w-full" />
+                        <x-label value="Usuario" class="mb-1" />
+                        <x-input type="text" placeholder="ID Usuario / Nombre" class="w-full" />
                     </div>
+                     <!-- Caso -->
                     <div>
-                        <x-label value="Rece:" class="mb-1" />
-                        <x-input type="text" class="w-full" />
-                    </div>
-                
-                    <!-- Row 2 -->
+                        <x-label value="Caso" class="mb-1" />
+                        <x-input type="text" placeholder="ID Caso" class="w-full" />
+                    </div>                
+                    <!-- Fechas -->
                     <div>
-                        <div class="flex justify-between">
-                            <x-label value="Fecha Inicio:" class="mb-1" />
-                            <x-label value="Fecha Fin:" class="mb-1" />
-                        </div>
+                        <x-label value="Rango de Fechas" class="mb-1" />
                         <div class="flex gap-2">
                             <x-input type="date" class="w-full" />
                             <x-input type="date" class="w-full" />
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between">
-                             <x-label value="Acción:" class="mb-1" />
-                             <x-label value="Estado:" class="mb-1" />
-                        </div>
-                         <div class="flex gap-2">
-                             <select class="w-1/2 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
-                                <option>Acción</option>
-                             </select>
-                             <select class="w-1/2 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
-                                <option>Estado</option>
-                             </select>
                         </div>
                     </div>
                 </div>
@@ -95,43 +76,18 @@
                         <thead class="bg-blue-600 text-white">
                             <tr>
                                 <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">ID</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Fecha</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Hora</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Usuario</th>
                                 <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Caso</th>
                                 <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Acción</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Detalles</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Estado</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">IP</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Estado Anterior</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Estado Final</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider">Fecha</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 text-sm">
                             <!-- Helper row for preview -->
-                            <tr>
-                                <td class="px-3 py-2 whitespace-nowrap">001</td>
-                                <td class="px-3 py-2 whitespace-nowrap">2023-10-26</td>
-                                <td class="px-3 py-2 whitespace-nowrap">10:30</td>
-                                <td class="px-3 py-2 whitespace-nowrap">C035</td>
-                                <td class="px-3 py-2 whitespace-nowrap">Crear Caso</td>
-                                <td class="px-3 py-2 whitespace-nowrap">Caso creado</td>
-                                <td class="px-3 py-2 whitespace-nowrap">Éxito</td>
-                            </tr>
-                             <tr>
-                                <td class="px-3 py-2 whitespace-nowrap">002</td>
-                                <td class="px-3 py-2 whitespace-nowrap">2023-10-26</td>
-                                <td class="px-3 py-2 whitespace-nowrap">11:00</td>
-                                <td class="px-3 py-2 whitespace-nowrap"></td>
-                                <td class="px-3 py-2 whitespace-nowrap">Recep</td>
-                                <td class="px-3 py-2 whitespace-nowrap">Equipo recibido</td>
-                                <td class="px-3 py-2 whitespace-nowrap">Éxito</td>
-                            </tr>
-                            <tr>
-                                <td class="px-3 py-2 whitespace-nowrap">003</td>
-                                <td class="px-3 py-2 whitespace-nowrap">2023-10-26</td>
-                                <td class="px-3 py-2 whitespace-nowrap">11:30</td>
-                                <td class="px-3 py-2 whitespace-nowrap">11:00</td>
-                                <td class="px-3 py-2 whitespace-nowrap">Solicitar Pieza</td>
-                                <td class="px-3 py-2 whitespace-nowrap">Solicito P005</td>
-                                <td class="px-3 py-2 whitespace-nowrap">Pendiente</td>
-                            </tr>
+                          
                         </tbody>
                     </table>
                 </div>

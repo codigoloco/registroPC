@@ -19,6 +19,8 @@ return new class extends Migration
             $table->text('estado_final');            
             $table->foreign('id_usuario')->references('id')->on('users');
             $table->foreign('id_caso')->references('id')->on('casos');
+            $table->string('ip');
+            $table->string('sentencia');
             $table->timestamps();
         });
     }
