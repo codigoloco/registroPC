@@ -1,0 +1,11 @@
+# Arquitectura de Datos y Reglas del Proyecto
+
+## Reglas de Arquitectura de Datos
+- **Unicidad:** No generes controladores ni modelos nuevos si ya existen para la entidad (ej. Casos). Reutiliza siempre las clases existentes.
+- **Estándar de Funciones:** Cada operación debe estar encapsulada en una función única y clara (ej. `getCasos()`, `saveCaso()`, `updateCaso()`).
+- **Mantenibilidad:** Si se solicita una nueva funcionalidad para una entidad existente, añade el método al controlador/modelo actual en lugar de crear archivos redundantes.
+
+## Otras Reglas Generales
+- Todas las respuestas, procesos de pensamiento, listas de tareas y explicaciones deben estar siempre en español.
+- Usar rutas absolutas para las herramientas.
+- Seguir las mejores prácticas de Laravel y Alpine.js.
