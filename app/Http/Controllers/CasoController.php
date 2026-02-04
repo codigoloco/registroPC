@@ -1,0 +1,136 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Caso;
+use App\Models\DocumentacionCaso;
+use App\Models\PiezaSoporte;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+class CasoController extends Controller
+{
+    /**
+     * Muestra la lista de casos paginada.
+     */
+    public function index()
+    {
+        $casos = Caso::with(['cliente', 'tecnico'])->orderBy('id', 'desc')->paginate(10);
+        return view('gestion-casos', compact('casos'));
+    }
+
+    /**
+     * Guarda un nuevo caso.
+     */
+    public function saveCaso(Request $request)
+    {
+        $request->validate([
+            'id_cliente' => 'required|exists:clientes,id',
+            'descripcion_falla' => 'required|string|max:100',
+            'pieza_sugerida' => 'nullable|string|max:100',
+            'forma_de_atencion' => 'required|in:encomienda,presencial',
+            'estatus' => 'required|in:asignado,espera,reparado,entregado',
+        ]);
+
+        try {
+            $caso = Caso::create([
+                'id_cliente' => $request->id_cliente,
+                'id_usuario' => Auth::id(), // Técnico autenticado
+                'descripcion_falla' => $request->descripcion_falla,
+                'pieza_sugerida' => $request->pieza_sugerida,
+                'forma_de_atencion' => $request->forma_de_atencion,
+                'estatus' => $request->estatus,
+            ]);
+
+            return redirect()->back()->with('success', "Caso #{$caso->id} creado exitosamente.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al crear caso: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Documenta el uso de piezas y servicios en un caso.
+     */
+    public function documentarCaso(Request $request)
+    {
+        $request->validate([
+            'id_caso' => 'required|exists:casos,id',
+            'id_pieza_soporte' => 'required|array',
+            'id_pieza_soporte.*' => 'required|integer|exists:pieza_soporte,id',
+            'cantidad' => 'required|array',
+            'cantidad.*' => 'required|integer|min:1',
+            'observacion' => 'nullable|string',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            foreach ($request->id_pieza_soporte as $index => $piezaId) {
+                DocumentacionCaso::create([
+                    'id_caso' => $request->id_caso,
+                    'id_pieza_soporte' => $piezaId,
+                    'cantidad' => $request->cantidad[$index],
+                    'observacion' => $request->observacion,
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Caso documentado exitosamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al documentar caso: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Actualiza un caso existente.
+     */
+    public function updateCaso(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:casos,id',
+            'descripcion_falla' => 'required|string|max:100',
+            'pieza_sugerida' => 'nullable|string|max:100',
+            'forma_de_atencion' => 'required|in:encomienda,presencial',
+            'estatus' => 'required|in:asignado,espera,reparado,entregado',
+        ]);
+
+        try {
+            $caso = Caso::findOrFail($request->id);
+            $caso->update([
+                'descripcion_falla' => $request->descripcion_falla,
+                'pieza_sugerida' => $request->pieza_sugerida,
+                'forma_de_atencion' => $request->forma_de_atencion,
+                'estatus' => $request->estatus,
+            ]);
+
+            return redirect()->back()->with('success', "Caso #{$caso->id} actualizado exitosamente.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al actualizar caso: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Busca un caso por ID.
+     */
+    public function findById($id)
+    {
+        $caso = Caso::with(['cliente', 'tecnico', 'documentacion.piezaSoporte'])->find($id);
+
+        if (!$caso) {
+            return response()->json(['error' => 'Caso no encontrado'], 404);
+        }
+
+        return response()->json($caso);
+    }
+
+    /**
+     * Obtiene todas las piezas registradas para el select del modal.
+     */
+    public function getPiezas()
+    {
+        return response()->json(PiezaSoporte::all());
+    }
+}

@@ -15,9 +15,40 @@
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-data="{
+            searchEmail: '',
+            user: {
+                name: '',
+                lastname: '',
+                email: '',
+                role: '',
+                id_estatus: ''
+            },
+            loading: false,
+            error: '',
+            buscarUsuario() {
+                if (!this.searchEmail) return;
+                this.loading = true;
+                this.error = '';
+                fetch(`/users/search/${this.searchEmail}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            this.error = data.error;
+                            this.user = { name: '', lastname: '', email: '', role: '', id_estatus: '' };
+                        } else {
+                            this.user = data;
+                        }
+                    })
+                    .catch(err => {
+                        this.error = 'Error al buscar';
+                        console.error(err);
+                    })
+                    .finally(() => this.loading = false);
+            }
+        }">
 
-        <!-- Encabezado del Formulario (Dentro del modal) -->
+        <!-- Encabezado del Formulario -->
         <div class="bg-blue-600 text-white px-6 py-4 flex items-center shadow-sm justify-between">
             <div class="flex items-center">
                 <span class="text-lg font-semibold">{{ __('Modificar Usuario') }}</span>
@@ -29,22 +60,25 @@
             </button>
         </div>
 
-        <div class="p-8 space-y-8">
-            <x-user-management-form />
-        </div>
+        <form action="{{ route('users.update') }}" method="POST">
+            @csrf
+            <input type="hidden" name="email" :value="user.email">
+            <div class="p-8 space-y-8">
+                <x-user-management-form />
+            </div>
 
-        <!-- Footer de Acciones -->
-        <div
-            class="bg-gray-50 dark:bg-gray-700 px-6 py-6 flex justify-center gap-4 border-t border-gray-200 dark:border-gray-600">
-            <x-button
-                class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 px-10">
-                {{ __('Crear Usuario') }}
-            </x-button>
-            <x-button
-                class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 px-10">
-                {{ __('Guardar Cambios') }}
-            </x-button>
-        </div>
+            <!-- Footer de Acciones -->
+            <div
+                class="bg-gray-50 dark:bg-gray-700 px-6 py-6 flex justify-center gap-4 border-t border-gray-200 dark:border-gray-600">
+                <x-button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 px-10">
+                    {{ __('Guardar Cambios') }}
+                </x-button>
+                <x-secondary-button class="px-10" @click="showModal = false">
+                    {{ __('Cancelar') }}
+                </x-secondary-button>
+            </div>
+        </form>
 
     </div>
 </div>

@@ -17,110 +17,203 @@
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-data="{
+            searchId: '',
+            caso: null,
+            loading: false,
+            error: '',
+            buscarCaso() {
+                if (!this.searchId) return;
+                this.loading = true;
+                this.error = '';
+                this.caso = null;
+
+                fetch(`/casos/search/${this.searchId}`, {
+                    headers: { 'Accept': 'application/json' }
+                })
+                .then(async response => {
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Caso no encontrado');
+                    }
+                    return data;
+                })
+                .then(data => {
+                    this.caso = data;
+                })
+                .catch(err => {
+                    this.error = err.message;
+                    this.caso = null;
+                })
+                .finally(() => this.loading = false);
+            }
+        }">
 
         <!-- Encabezado -->
         <div class="bg-blue-600 text-white px-6 py-4 flex items-center justify-between shadow-sm">
-            <span class="text-lg font-semibold">{{ __('Modificar Caso') }}</span>
+            <span class="text-lg font-semibold">{{ __('Consultar / Modificar Caso') }}</span>
+            <button @click="showRegistrarCasoModal = false" class="text-white hover:text-gray-200 focus:outline-none">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
 
-        <div class="p-8 space-y-6">
+        <form action="{{ route('casos.update') }}" method="POST">
+            @csrf
+            <input type="hidden" name="id" x-bind:value="caso ? caso.id : ''">
 
-            <!-- Consultar Caso -->
-            <div>
-                <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-3 text-base">{{ __('Consultar Caso') }}</h3>
-                <div class="flex gap-4">
-                    <div class="flex-grow">
-                        <x-input type="text" placeholder="Serial" class="w-full" />
+            <div class="p-8 space-y-6">
+
+                <!-- Consultar Caso -->
+                <div>
+                    <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-3 text-base">{{ __('Consultar Caso') }}
+                    </h3>
+                    <div class="flex gap-4">
+                        <div class="flex-grow relative">
+                            <x-input type="text" placeholder="ID del Caso" class="w-full" x-model="searchId"
+                                @keyup.enter="buscarCaso()" />
+                            <div x-show="loading" class="absolute right-3 top-2.5">
+                                <svg class="animate-spin h-5 w-5 text-blue-500" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+                        <x-button type="button" @click="buscarCaso()"
+                            class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500">
+                            {{ __('Modificar') }}
+                        </x-button>
                     </div>
-                    <x-button
-                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500">
-                        {{ __('Modificar') }}
-                    </x-button>
+                    <p x-show="error" class="text-sm text-red-600 mt-2 font-bold" x-text="error"></p>
                 </div>
+
+                <!-- Detalles del Caso -->
+                <div x-show="caso" x-transition>
+                    <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-base">{{ __('Detalles del Caso') }}
+                    </h3>
+
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-md space-y-4">
+
+                        <!-- Cliente -->
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <label class="text-sm text-gray-700 dark:text-gray-300">Cliente</label>
+                            <div class="col-span-2">
+                                <p class="text-sm font-bold text-blue-600"
+                                    x-text="caso ? caso.cliente.nombre + ' ' + (caso.cliente.apellido || '') : ''"></p>
+                            </div>
+                        </div>
+
+                        <!-- Falla Reportada -->
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <label class="text-sm text-gray-700 dark:text-gray-300">Descripción Falla</label>
+                            <div class="col-span-2">
+                                <x-input type="text" name="descripcion_falla" class="w-full" maxlength="100" required
+                                    x-bind:value="caso ? caso.descripcion_falla : ''" />
+                            </div>
+                        </div>
+
+                        <!-- Pieza Sugerida -->
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <label class="text-sm text-gray-700 dark:text-gray-300">Pieza Sugerida</label>
+                            <div class="col-span-2">
+                                <x-input type="text" name="pieza_sugerida" class="w-full" maxlength="100"
+                                    placeholder="Opcional" x-bind:value="caso ? caso.pieza_sugerida : ''" />
+                            </div>
+                        </div>
+
+                        <!-- Forma de Atención (Select) -->
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <label class="text-sm text-gray-700 dark:text-gray-300">Forma de Atención</label>
+                            <div class="col-span-2">
+                                <select name="forma_de_atencion"
+                                    x-bind:value="caso ? caso.forma_de_atencion : 'encomienda'"
+                                    class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
+                                    <option value="encomienda">Encomienda</option>
+                                    <option value="presencial">Presencial</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Estatus (Select) -->
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <label class="text-sm text-gray-700 dark:text-gray-300">Estatus</label>
+                            <div class="col-span-2">
+                                <select name="estatus" x-bind:value="caso ? caso.estatus : 'asignado'"
+                                    class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
+                                    <option value="asignado">Asignado</option>
+                                    <option value="espera">Espera</option>
+                                    <option value="reparado">Reparado</option>
+                                    <option value="entregado">Entregado</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Historial de Documentación (Piezas/Servicios) -->
+                    <div x-show="caso && caso.documentacion && caso.documentacion.length > 0"
+                        class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
+                        <h4 class="font-bold text-blue-600 dark:text-blue-400 mb-3 text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                            {{ __('Historial de Piezas / Servicios') }}
+                        </h4>
+                        <div class="overflow-x-auto shadow-sm rounded-lg border border-gray-200 dark:border-gray-700">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-900/50">
+                                    <tr>
+                                        <th
+                                            class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                                            {{ __('Pieza / Servicio') }}
+                                        </th>
+                                        <th
+                                            class="px-4 py-2 text-center text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                                            {{ __('Cant.') }}
+                                        </th>
+                                        <th
+                                            class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                                            {{ __('Obs.') }}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+                                    <template x-for="doc in caso.documentacion" :key="doc.id">
+                                        <tr>
+                                            <td class="px-4 py-2 text-[11px] text-gray-700 dark:text-gray-300"
+                                                x-text="doc.pieza_soporte.nombre"></td>
+                                            <td class="px-4 py-2 text-[11px] text-center text-gray-700 dark:text-gray-300 font-bold"
+                                                x-text="doc.cantidad"></td>
+                                            <td class="px-4 py-2 text-[11px] text-gray-700 dark:text-gray-300 italic truncate max-w-[150px]"
+                                                :title="doc.observacion" x-text="doc.observacion || '-'"></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Detalles del Caso -->
-            <div>
-                <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-base">{{ __('Detalles del Caso') }}</h3>
-
-                <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-md space-y-4">
-
-                    <!-- Serial -->
-                    <div class="grid grid-cols-3 gap-4 items-center">
-                        <label class="text-sm text-gray-700 dark:text-gray-300">Cliente</label>
-                        <div class="col-span-2">
-                            <x-input type="text" class="w-full" />
-                        </div>
-                    </div>
-
-                    <!-- Modelo + Tipo (Row) -->
-                    <div class="grid grid-cols-3 gap-4 items-center">
-                        <label class="text-sm text-gray-700 dark:text-gray-300">Modelo</label>
-                        <div class="col-span-2 flex items-center gap-2">
-                            <span class="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">Tipo</span>
-                            <x-input type="text" class="w-full" />
-                        </div>
-                    </div>
-
-                    <!-- Falla Reportada -->
-                    <div class="grid grid-cols-3 gap-4 items-center">
-                        <label class="text-sm text-gray-700 dark:text-gray-300">Descripción Falla</label>
-                        <div class="col-span-2">
-                            <x-input type="text" name="descripcion_falla" class="w-full" maxlength="100" required />
-                        </div>
-                    </div>
-
-                    <!-- Pieza Sugerida -->
-                    <div class="grid grid-cols-3 gap-4 items-center">
-                        <label class="text-sm text-gray-700 dark:text-gray-300">Pieza Sugerida</label>
-                        <div class="col-span-2">
-                            <x-input type="text" name="pieza_sugerida" class="w-full" maxlength="100"
-                                placeholder="Opcional" />
-                        </div>
-                    </div>
-
-                    <!-- Forma de Atención (Select) -->
-                    <div class="grid grid-cols-3 gap-4 items-center">
-                        <label class="text-sm text-gray-700 dark:text-gray-300">Forma de Atención</label>
-                        <div class="col-span-2">
-                            <select name="forma_de_atencion"
-                                class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
-                                <option value="encomienda">Encomienda</option>
-                                <option value="presencial">Presencial</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Estatus (Select) -->
-                    <div class="grid grid-cols-3 gap-4 items-center">
-                        <label class="text-sm text-gray-700 dark:text-gray-300">Estatus</label>
-                        <div class="col-span-2">
-                            <select name="estatus"
-                                class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
-                                <option value="asignado">Asignado</option>
-                                <option value="espera">Espera</option>
-                                <option value="reparado">Reparado</option>
-                                <option value="entregado">Entregado</option>
-                            </select>
-                        </div>
-                    </div>
-
-                </div>
+            <!-- Footer -->
+            <div
+                class="bg-gray-50 dark:bg-gray-700 px-6 py-6 flex justify-center gap-4 border-t border-gray-200 dark:border-gray-600">
+                <x-button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 px-8"
+                    ::disabled="!caso">
+                    {{ __('Guardar') }}
+                </x-button>
+                <x-secondary-button class="px-8" @click="showRegistrarCasoModal = false">
+                    {{ __('Cancelar') }}
+                </x-secondary-button>
             </div>
-
-        </div>
-
-        <!-- Footer -->
-        <div
-            class="bg-gray-50 dark:bg-gray-700 px-6 py-6 flex justify-center gap-4 border-t border-gray-200 dark:border-gray-600">
-            <x-button class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 px-8">
-                {{ __('Guardar') }}
-            </x-button>
-            <x-secondary-button class="px-8" @click="showRegistrarCasoModal = false">
-                {{ __('Cancelar') }}
-            </x-secondary-button>
-        </div>
+        </form>
 
     </div>
 </div>
