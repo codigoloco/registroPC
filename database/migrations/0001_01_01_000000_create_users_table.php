@@ -10,11 +10,26 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        Schema::create('estatus_usuario', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre', 20);
+            $table->timestamps();
+        });
+
+        // Insertar estatus iniciales
+        DB::table('estatus_usuario')->insert([
+            ['id' => 1, 'nombre' => 'Activo'],
+            ['id' => 2, 'nombre' => 'Inactivo'],
+            ['id' => 3, 'nombre' => 'Vacaciones'],
+            ['id' => 4, 'nombre' => 'Jubilado'],
+        ]);
+    
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('lastname');
             $table->string('email')->unique();
+            $table->string('role')->after('email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

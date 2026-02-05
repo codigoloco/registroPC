@@ -20,6 +20,7 @@ return new class extends Migration
         Schema::create('clientes', function (Blueprint $table) {
             $table->integer('id')->unique();            
             $table->string('nombre', 100);
+            $table->string('apellido', 100);
             $table->text('direccion');            
             $table->enum('tipo_cliente', ['natural', 'juridico','Gubernamental']);
             $table->timestamps();

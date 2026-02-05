@@ -1,15 +1,17 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration {
+class PiezaSoporteSeeder extends Seeder
+{
     /**
-     * Run the migrations.
+     * Run the database seeds.
      */
-    public function up(): void
+    public function run(): void
     {
         $piezas = [
             'En Diagnóstico',
@@ -46,15 +48,7 @@ return new class extends Migration {
         ];
 
         foreach ($piezas as $pieza) {
-            DB::table('pieza_soporte')->insert(['nombre' => $pieza]);
+            DB::table('pieza_soporte')->insertOrIgnore(['nombre' => $pieza]);
         }
     }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        DB::table('pieza_soporte')->truncate();
-    }
-};
+}

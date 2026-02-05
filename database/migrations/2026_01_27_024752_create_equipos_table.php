@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('equipos', function (Blueprint $table) {
-            $table->integer('id')->autoIncrement();
-            $table->string('id_tipo', 30);
-            $table->string('id_modelo', 30);
+            $table->id();
+            $table->unsignedBigInteger('id_tipo');
+            $table->unsignedBigInteger('id_modelo');
             $table->string('serial_equipo', 30)->unique();
             
             $table->foreign('id_tipo')->references('id')->on('tipo_de_equipo');
