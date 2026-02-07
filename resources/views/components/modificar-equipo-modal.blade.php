@@ -7,12 +7,25 @@
         equipoTipo: '',
         loading: false,
         error: '',
+        init() {
+            this.$watch('showModificarModal', value => {
+                if (!value) {
+                    this.error = '';
+                    this.searchSerial = '';
+                }
+            });
+        },
         buscarEquipo() {
             if (!this.searchSerial) return;
             this.loading = true;
             this.error = '';
             fetch(`/equipos/search/${this.searchSerial}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok && response.status !== 404) {
+                        throw new Error('Error en el servidor');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.error) {
                         this.error = data.error;
@@ -28,7 +41,7 @@
                     }
                 })
                 .catch(err => {
-                    this.error = 'Error al buscar el equipo';
+                    this.error = 'Error de conexión o del servidor';
                     console.error(err);
                 })
                 .finally(() => this.loading = false);
