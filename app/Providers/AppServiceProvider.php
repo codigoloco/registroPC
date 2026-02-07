@@ -19,6 +19,37 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Illuminate\Support\Facades\Event::listen(
+            \Illuminate\Auth\Events\Login::class,
+            function ($event) {
+                \App\Models\Auditoria::create([
+                    'id_usuario' => $event->user->id,
+                    'id_caso' => null,
+                    'sentencia' => 'LOGIN',
+                    'estado_final' => json_encode([
+                        'nota' => 'Inicio de sesión exitoso',
+                        'ua' => request()->userAgent()
+                    ]),
+                    'ip' => request()->ip(),
+                ]);
+            }
+        );
+
+        \Illuminate\Support\Facades\Event::listen(
+            \Illuminate\Auth\Events\Logout::class,
+            function ($event) {
+                if ($event->user) {
+                    \App\Models\Auditoria::create([
+                        'id_usuario' => $event->user->id,
+                        'id_caso' => null,
+                        'sentencia' => 'LOGOUT',
+                        'estado_final' => json_encode([
+                            'nota' => 'Cierre de sesión exitoso'
+                        ]),
+                        'ip' => request()->ip(),
+                    ]);
+                }
+            }
+        );
     }
 }
