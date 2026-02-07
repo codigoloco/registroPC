@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auditoria;
 use App\Models\Cliente;
 use App\Models\ContactoCliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ClienteController extends Controller
 {
@@ -59,6 +61,15 @@ class ClienteController extends Controller
                 ]);
             }
 
+            // Guardar auditoria
+            Auditoria::create([
+                'id_usuario' => Auth::id(),
+                'id_caso' => null, // No aplica para cliente solo
+                'sentencia' => 'INSERT_CLIENTE',
+                'estado_final' => json_encode(['nota' => 'Cliente registrado.', 'datos' => $cliente->load('contactos')->toArray()]),
+                'ip' => $request->ip(),
+            ]);
+
             DB::commit();
 
             return redirect()->back()->with('success', 'Cliente registrado exitosamente.');
@@ -87,6 +98,7 @@ class ClienteController extends Controller
             DB::beginTransaction();
 
             $cliente = Cliente::findOrFail($request->cedula);
+            $estadoInicial = $cliente->load('contactos')->toArray();
             $cliente->update([
                 'nombre' => $request->nombre,
                 'apellido' => $request->apellido,
@@ -106,6 +118,16 @@ class ClienteController extends Controller
                     'correo_cliente' => $request->emails[$i] ?? 'N/A',
                 ]);
             }
+
+            // Guardar auditoria
+            Auditoria::create([
+                'id_usuario' => Auth::id(),
+                'id_caso' => null,
+                'sentencia' => 'UPDATE_CLIENTE',
+                'estado_inicial' => json_encode($estadoInicial),
+                'estado_final' => json_encode($cliente->fresh()->load('contactos')->toArray()),
+                'ip' => $request->ip(),
+            ]);
 
             DB::commit();
 

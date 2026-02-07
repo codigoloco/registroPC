@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auditoria;
 use App\Models\Equipo;
 use App\Models\Modelo;
 use App\Models\TipoDeEquipo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EquipoController extends Controller
 {
@@ -36,10 +38,19 @@ class EquipoController extends Controller
         $modelo = Modelo::firstOrCreate(['nombre' => $request->nombre_modelo]);
 
         // Crear el equipo con los IDs obtenidos
-        Equipo::create([
+        $equipo = Equipo::create([
             'id_tipo' => $tipo->id,
             'id_modelo' => $modelo->id,
             'serial_equipo' => $request->serial_equipo,
+        ]);
+
+        // Guardar auditoria
+        Auditoria::create([
+            'id_usuario' => Auth::id(),
+            'id_caso' => null,
+            'sentencia' => 'INSERT_EQUIPO',
+            'estado_final' => json_encode(['nota' => 'Equipo registrado.', 'datos' => $equipo->load(['tipo', 'modelo'])->toArray()]),
+            'ip' => $request->ip(),
         ]);
 
         return redirect()->back()->with('success', 'Equipo registrado exitosamente.');
@@ -61,10 +72,21 @@ class EquipoController extends Controller
         $modelo = Modelo::firstOrCreate(['nombre' => $request->nombre_modelo]);
 
         $equipo = Equipo::findOrFail($request->id);
+        $estadoInicial = $equipo->load(['tipo', 'modelo'])->toArray();
         $equipo->update([
             'id_tipo' => $tipo->id,
             'id_modelo' => $modelo->id,
             'serial_equipo' => $request->serial_equipo,
+        ]);
+
+        // Guardar auditoria
+        Auditoria::create([
+            'id_usuario' => Auth::id(),
+            'id_caso' => null,
+            'sentencia' => 'UPDATE_EQUIPO',
+            'estado_inicial' => json_encode($estadoInicial),
+            'estado_final' => json_encode($equipo->fresh()->load(['tipo', 'modelo'])->toArray()),
+            'ip' => $request->ip(),
         ]);
 
         return redirect()->back()->with('success', 'Equipo actualizado exitosamente.');

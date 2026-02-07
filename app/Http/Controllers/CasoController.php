@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auditoria;
 use App\Models\Caso;
 use App\Models\DocumentacionCaso;
 use App\Models\PiezaSoporte;
@@ -42,6 +43,14 @@ class CasoController extends Controller
                 'forma_de_atencion' => $request->forma_de_atencion,
                 'estatus' => $request->estatus,
             ]);
+            // Guardar auditoria
+            Auditoria::create([
+                'id_usuario' => Auth::id(),
+                'id_caso' => $caso->id,
+                'sentencia' => 'INSERT',
+                'estado_final' => json_encode(['nota' => 'Caso creado exitosamente.', 'datos' => $caso->toArray()]),                                    
+                'ip' => $request->ip(),
+            ]);
 
             return redirect()->back()->with('success', "Caso #{$caso->id} creado exitosamente.");
         } catch (\Exception $e) {
@@ -74,7 +83,14 @@ class CasoController extends Controller
                     'observacion' => $request->observacion,
                 ]);
             }
-
+            // Guardar auditoria
+            Auditoria::create([
+                'id_usuario' => Auth::id(),
+                'id_caso' => $request->id_caso,
+                'sentencia' => 'DOCUMENTAR',
+                'estado_final' => json_encode(['nota' => 'Caso documentado exitosamente.']),
+                'ip' => $request->ip(),
+            ]);
             DB::commit();
 
             return redirect()->back()->with('success', 'Caso documentado exitosamente.');
@@ -99,11 +115,23 @@ class CasoController extends Controller
 
         try {
             $caso = Caso::findOrFail($request->id);
+            $estadoInicial = $caso->toArray();
+            
             $caso->update([
                 'descripcion_falla' => $request->descripcion_falla,
                 'pieza_sugerida' => $request->pieza_sugerida,
                 'forma_de_atencion' => $request->forma_de_atencion,
                 'estatus' => $request->estatus,
+            ]);
+
+            // Guardar auditoria
+            Auditoria::create([
+                'id_usuario' => Auth::id(),
+                'id_caso' => $caso->id,
+                'sentencia' => 'UPDATE',
+                'estado_inicial' => json_encode($estadoInicial),
+                'estado_final' => json_encode($caso->fresh()->toArray()),
+                'ip' => $request->ip(),
             ]);
 
             return redirect()->back()->with('success', "Caso #{$caso->id} actualizado exitosamente.");

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Auditoria;
 use App\Models\Caso;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,6 +65,15 @@ class RecepcionController extends Controller
 
         RecepcionDeEquipo::create($data);
 
+        // Guardar auditoria
+        Auditoria::create([
+            'id_usuario' => Auth::id(),
+            'id_caso' => $caso->id,
+            'sentencia' => 'INSERT_RECEPCION',
+            'estado_final' => json_encode(['nota' => 'Recepción de equipo registrada.', 'datos' => $data]),
+            'ip' => $request->ip(),
+        ]);
+
         return redirect()->back()->with('success', 'Recepción de equipo registrada exitosamente.');
     }
 
@@ -81,6 +91,15 @@ class RecepcionController extends Controller
             'id_equipo' => $recepcion->id_equipo,
             'id_usuario_entrega' => Auth::id(),
             'deposito' => strtolower($request->deposito), // Normalizamos a minúsculas según el enum de la migración
+        ]);
+
+        // Guardar auditoria
+        Auditoria::create([
+            'id_usuario' => Auth::id(),
+            'id_caso' => $recepcion->id_caso,
+            'sentencia' => 'INSERT_SALIDA',
+            'estado_final' => json_encode(['nota' => 'Salida de equipo registrada.', 'deposito' => $request->deposito]),
+            'ip' => $request->ip(),
         ]);
 
         return redirect()->back()->with('success', 'Salida de equipo registrada exitosamente.');
@@ -110,6 +129,15 @@ class RecepcionController extends Controller
         $data['id_usuario_tecnico_asignado'] = $caso->id_usuario;
 
         $recepcion->update($data);
+
+        // Guardar auditoria
+        Auditoria::create([
+            'id_usuario' => Auth::id(),
+            'id_caso' => $caso->id,
+            'sentencia' => 'UPDATE_RECEPCION',
+            'estado_final' => json_encode(['nota' => 'Recepción de equipo actualizada.', 'datos' => $data]),
+            'ip' => $request->ip(),
+        ]);
 
         return redirect()->back()->with('success', 'Registro de recepción actualizado exitosamente.');
     }

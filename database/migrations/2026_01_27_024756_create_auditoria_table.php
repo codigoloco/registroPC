@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('auditoria', function (Blueprint $table) {
             $table->integer('id')->autoIncrement();           
             $table->unsignedBigInteger('id_usuario');
-            $table->integer('id_caso');            
+            $table->integer('id_caso')->nullable(); // Nullable para permitir auditar otros modulos (Clientes, Usuarios, etc)
             $table->text('estado_inicial')->nullable();
             $table->text('estado_final');            
             $table->foreign('id_usuario')->references('id')->on('users');

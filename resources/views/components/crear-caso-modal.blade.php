@@ -88,22 +88,6 @@
                             </div>
                         </div>
 
-                        <!-- Piezas Seleccionadas (Select) -->
-                        <div class="grid grid-cols-3 gap-4 items-center">
-                            <label class="text-sm text-gray-700 dark:text-gray-300">Piezas Disponibles</label>
-                            <div class="col-span-2">
-                                <select name="id_pieza_soporte" 
-                                    class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10"
-                                    :disabled="loadingPiezas">
-                                    <option value="" x-show="loadingPiezas">Cargando piezas...</option>
-                                    <option value="" x-show="!loadingPiezas">Seleccione una pieza</option>
-                                    <template x-for="pieza in piezas" :key="pieza.id">
-                                        <option :value="pieza.id" x-text="pieza.nombre"></option>
-                                    </template>
-                                </select>
-                            </div>
-                        </div>
-
                         <!-- Forma de Atención (Select) -->
                         <div class="grid grid-cols-3 gap-4 items-center">
                             <label class="text-sm text-gray-700 dark:text-gray-300">Forma de Atención</label>

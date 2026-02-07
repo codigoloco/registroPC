@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auditoria;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules;
 
 class UserController extends Controller
@@ -32,13 +34,25 @@ class UserController extends Controller
             'id_estatus' => ['required', 'integer'],
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'lastname' => $request->lastname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'id_estatus' => $request->id_estatus,
+        ]);
+
+        // Guardar auditoria (sin password)
+        $userData = $user->toArray();
+        unset($userData['password']);
+
+        Auditoria::create([
+            'id_usuario' => Auth::id(),
+            'id_caso' => null,
+            'sentencia' => 'INSERT_USER',
+            'estado_final' => json_encode(['nota' => 'Usuario creado.', 'datos' => $userData]),
+            'ip' => $request->ip(),
         ]);
 
         return redirect()->back()->with('success', 'Usuario creado exitosamente.');
@@ -75,7 +89,23 @@ class UserController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
+        $estadoInicial = $user->toArray();
+        unset($estadoInicial['password']);
+        
         $user->update($data);
+
+        // Guardar auditoria
+        $userData = $user->fresh()->toArray();
+        unset($userData['password']);
+
+        Auditoria::create([
+            'id_usuario' => Auth::id(),
+            'id_caso' => null,
+            'sentencia' => 'UPDATE_USER',
+            'estado_inicial' => json_encode($estadoInicial),
+            'estado_final' => json_encode($userData),
+            'ip' => $request->ip(),
+        ]);
 
         return redirect()->back()->with('success', 'Usuario actualizado exitosamente.');
     }

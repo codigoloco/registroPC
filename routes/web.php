@@ -21,10 +21,8 @@ Route::middleware([
 
     Route::get('/gestion-casos', [\App\Http\Controllers\CasoController::class , 'index'])->name('gestion-casos');
 
-    Route::get('/gestion-auditoria', function () {
-            return view('gestion-auditoria');
-        }
-        )->name('gestion-auditoria');
+    Route::get('/gestion-auditoria', [\App\Http\Controllers\AuditoriaController::class, 'index'])->name('gestion-auditoria');
+    Route::get('/api/auditoria/data', [\App\Http\Controllers\AuditoriaController::class, 'getData'])->name('auditoria.data');
 
         // Rutas para Equipos
         Route::post('/equipos/save', [\App\Http\Controllers\EquipoController::class , 'saveEquipo'])->name('equipos.save');
