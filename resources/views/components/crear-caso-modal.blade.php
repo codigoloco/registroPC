@@ -16,37 +16,8 @@
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-data="{
-            searchCedula: '',
-            cliente: null,
-            loading: false,
-            error: '',
-            buscarCliente() {
-                if (!this.searchCedula) return;
-                this.loading = true;
-                this.error = '';
-                this.cliente = null;
-
-                fetch(`/clientes/search/${this.searchCedula}`, {
-                    headers: { 'Accept': 'application/json' }
-                })
-                .then(async response => {
-                    const data = await response.json();
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Cliente no encontrado');
-                    }
-                    return data;
-                })
-                .then(data => {
-                    this.cliente = data;
-                })
-                .catch(err => {
-                    this.error = err.message;
-                    this.cliente = null;
-                })
-                .finally(() => this.loading = false);
-            }
-        }">
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+        x-data="initCrearCasoModal()">
 
         <!-- Encabezado -->
         <div class="bg-blue-600 text-white px-6 py-4 flex items-center justify-between shadow-sm">
@@ -114,6 +85,22 @@
                             <div class="col-span-2">
                                 <x-input type="text" name="pieza_sugerida" class="w-full" maxlength="100"
                                     placeholder="Opcional" />
+                            </div>
+                        </div>
+
+                        <!-- Piezas Seleccionadas (Select) -->
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <label class="text-sm text-gray-700 dark:text-gray-300">Piezas Disponibles</label>
+                            <div class="col-span-2">
+                                <select name="id_pieza_soporte" 
+                                    class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10"
+                                    :disabled="loadingPiezas">
+                                    <option value="" x-show="loadingPiezas">Cargando piezas...</option>
+                                    <option value="" x-show="!loadingPiezas">Seleccione una pieza</option>
+                                    <template x-for="pieza in piezas" :key="pieza.id">
+                                        <option :value="pieza.id" x-text="pieza.nombre"></option>
+                                    </template>
+                                </select>
                             </div>
                         </div>
 

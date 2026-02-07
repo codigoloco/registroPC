@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('documentacion_de_caso', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_caso')->constrained('casos')->onDelete('cascade');
             $table->foreignId('id_pieza_soporte')->constrained('pieza_soporte')->onDelete('cascade');            
             $table->smallInteger('cantidad');
             $table->text('observacion')->nullable();

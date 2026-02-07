@@ -23,5 +23,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@test.com',
             'password' => '123456789',            
         ]);
+
+        // Llamar al seeder de piezas de soporte
+        $this->call([
+            PiezaSoporteSeeder::class,
+        ]);
     }
 }

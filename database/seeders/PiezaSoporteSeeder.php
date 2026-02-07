@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\PiezaSoporte;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class PiezaSoporteSeeder extends Seeder
 {
@@ -48,7 +48,9 @@ class PiezaSoporteSeeder extends Seeder
         ];
 
         foreach ($piezas as $pieza) {
-            DB::table('pieza_soporte')->insertOrIgnore(['nombre' => $pieza]);
+            PiezaSoporte::firstOrCreate(['nombre' => $pieza]);
         }
+
+        $this->command->info('✓ Piezas de soporte creadas exitosamente: ' . count($piezas) . ' registros');
     }
 }

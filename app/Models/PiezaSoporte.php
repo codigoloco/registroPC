@@ -11,6 +11,8 @@ class PiezaSoporte extends Model
 
     protected $table = 'pieza_soporte';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'nombre',
     ];
