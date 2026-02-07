@@ -18,7 +18,7 @@
             <div class="dashboard-card glass-panel">
                 {{-- Header --}}
                 <div class="dashboard-header">
-                    <h2>CU 010 Generar Gráficas y Estadística</h2>
+                    <h2>Generar Gráficas y Estadística</h2>
                     <p>Generación de Reportes, Selección de Fechas y Exportación de Datos</p>
                 </div>
 
