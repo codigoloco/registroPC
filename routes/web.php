@@ -11,20 +11,17 @@ Route::middleware([
 ])->group(function () {
     Route::get('/', [\App\Http\Controllers\HomeController::class , 'index'])->name('home');
 
-    Route::get('/estadisticas', function () {
-            return view('dashboard');
-        }
-        )->name('estadisticas');
+    Route::get('/estadisticas', [\App\Http\Controllers\ReporteController::class , 'index'])->name('estadisticas');
 
-        Route::get('/gestion-equipos', [\App\Http\Controllers\EquipoController::class , 'index'])->name('gestion-equipos');
+    Route::get('/gestion-equipos', [\App\Http\Controllers\EquipoController::class , 'index'])->name('gestion-equipos');
 
-        Route::get('/gestion-usuarios', [\App\Http\Controllers\UserController::class , 'index'])->name('gestion-usuarios');
+    Route::get('/gestion-usuarios', [\App\Http\Controllers\UserController::class , 'index'])->name('gestion-usuarios');
 
-        Route::get('/gestion-clientes', [\App\Http\Controllers\ClienteController::class , 'index'])->name('gestion-clientes');
+    Route::get('/gestion-clientes', [\App\Http\Controllers\ClienteController::class , 'index'])->name('gestion-clientes');
 
-        Route::get('/gestion-casos', [\App\Http\Controllers\CasoController::class , 'index'])->name('gestion-casos');
+    Route::get('/gestion-casos', [\App\Http\Controllers\CasoController::class , 'index'])->name('gestion-casos');
 
-        Route::get('/gestion-auditoria', function () {
+    Route::get('/gestion-auditoria', function () {
             return view('gestion-auditoria');
         }
         )->name('gestion-auditoria');
@@ -58,4 +55,7 @@ Route::middleware([
         Route::post('/casos/documentar', [\App\Http\Controllers\CasoController::class , 'documentarCaso'])->name('casos.documentar');
         Route::get('/casos/search/{id}', [\App\Http\Controllers\CasoController::class , 'findById'])->name('casos.search');
         Route::get('/piezas', [\App\Http\Controllers\CasoController::class , 'getPiezas'])->name('piezas.index');
+
+        // Rutas para Reportes
+        Route::get('/api/reportes/data', [\App\Http\Controllers\ReporteController::class , 'getData'])->name('reportes.data');
     });
