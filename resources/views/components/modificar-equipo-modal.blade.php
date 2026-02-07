@@ -65,6 +65,15 @@
                 <!-- Sección: Consultar Equipo -->
                 <div>
                     <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4">{{ __('Consultar Equipo') }}</h3>
+                    
+                    <!-- Alerta de Error -->
+                    <template x-if="error">
+                        <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded relative" role="alert">
+                            <strong class="font-bold">¡Atención!</strong>
+                            <span class="block sm:inline" x-text="error"></span>
+                        </div>
+                    </template>
+
                     <div class="flex flex-wrap items-center gap-4">
                         <div class="flex-grow">
                             <div class="relative">
