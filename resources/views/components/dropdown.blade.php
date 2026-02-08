@@ -4,6 +4,8 @@
 $alignmentClasses = match ($align) {
     'left' => 'ltr:origin-top-left rtl:origin-top-right start-0',
     'top' => 'origin-top',
+    'top-left' => 'ltr:origin-bottom-left rtl:origin-bottom-right start-0',
+    'top-right' => 'ltr:origin-bottom-right rtl:origin-bottom-left end-0',
     'none', 'false' => '',
     default => 'ltr:origin-top-right rtl:origin-top-left end-0',
 };
@@ -12,6 +14,11 @@ $width = match ($width) {
     '48' => 'w-48',
     '60' => 'w-60',
     default => 'w-48',
+};
+
+$directionClasses = match ($align) {
+    'top-left', 'top-right' => 'bottom-full mb-2',
+    default => 'mt-2',
 };
 @endphp
 
@@ -27,7 +34,7 @@ $width = match ($width) {
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="transform opacity-100 scale-100"
             x-transition:leave-end="transform opacity-0 scale-95"
-            class="absolute z-50 mt-2 {{ $width }} rounded-md shadow-lg {{ $alignmentClasses }} {{ $dropdownClasses }}"
+            class="absolute z-50 {{ $directionClasses }} {{ $width }} rounded-md shadow-lg {{ $alignmentClasses }} {{ $dropdownClasses }}"
             style="display: none;"
             @click="open = false">
         <div class="rounded-md ring-1 ring-black ring-opacity-5 {{ $contentClasses }}">
