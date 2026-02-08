@@ -19,7 +19,7 @@
                 {{-- Header --}}
                 <div class="dashboard-header">
                     <h2>Generar Gráficas y Estadística</h2>
-                    <p>Generación de Reportes, Selección de Fechas y Exportación de Datos</p>
+                    <p>Generación de Reportes con selección de Fechas</p>
                 </div>
 
                 <div class="p-4 md:p-8">
@@ -138,11 +138,11 @@
 
         function formatTitle(slug) {
             const titles = {
-                'equipos_tipo': 'Equipos por Tipo',
-                'equipos_falla': 'Equipos por Falla',
-                'rendimiento_tecnico': 'Rendimiento Técnico',
-                'recepcion': 'Recepción de Equipos',
-                'salida': 'Salida de Equipos'
+                'recibidos_atencion': 'Recibidos por Tipo de Atención',
+                'recibidos_tipo_equipo': 'Recibidos por Tipo de Equipo',
+                'entregados_atencion': 'Entregados por Tipo de Atención',
+                'entregados_tipo_equipo': 'Entregados por Tipo de Equipo',
+                'piezas_soporte': 'Piezas utilizadas en Soporte'
             };
             return titles[slug] || slug;
         }

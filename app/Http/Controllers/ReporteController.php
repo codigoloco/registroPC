@@ -21,86 +21,98 @@ class ReporteController extends Controller
 
         $data = [];
         $labels = [];
-        $datasets = [];
+        $results = collect([]);
 
-        // Base query constraints
-        $dateFilter = function ($query) use ($fechaInicio, $fechaFin) {
+        // Helper to apply date filters dynamically
+        $applyDateFilter = function ($query, $column) use ($fechaInicio, $fechaFin) {
             if ($fechaInicio) {
-                $query->whereDate('created_at', '>=', $fechaInicio);
+                $query->whereDate($column, '>=', $fechaInicio);
             }
             if ($fechaFin) {
-                $query->whereDate('created_at', '<=', $fechaFin);
+                $query->whereDate($column, '<=', $fechaFin);
             }
         };
 
         switch ($tipoReporte) {
-            case 'equipos_tipo':
-                $results = DB::table('equipos')
-                    ->join('tipo_de_equipo', 'equipos.id_tipo', '=', 'tipo_de_equipo.id')
-                    ->select('tipo_de_equipo.nombre', DB::raw('count(*) as total'))
-                    ->where(function ($q) use ($fechaInicio, $fechaFin) {
-                    if ($fechaInicio)
-                        $q->whereDate('equipos.created_at', '>=', $fechaInicio);
-                    if ($fechaFin)
-                        $q->whereDate('equipos.created_at', '<=', $fechaFin);
-                })
-                    ->groupBy('tipo_de_equipo.nombre')
-                    ->get();
+            case 'recibidos_atencion':
+                // A) Recibidos por tipo de atención
+                $query = DB::table('recepcion_de_equipo')
+                    ->select('tipo_atencion', DB::raw('count(*) as total'))
+                    ->groupBy('tipo_atencion');
+
+                $applyDateFilter($query, 'created_at');
+                $results = $query->get();
+
+                $labels = $results->pluck('tipo_atencion');
+                $data = $results->pluck('total');
+                break;
+
+            case 'recibidos_tipo_equipo':
+                // B) Recibidos por Tipo de equipo
+                $query = DB::table('recepcion_de_equipo as re')
+                    ->join('equipos as e', 're.id_equipo', '=', 'e.id')
+                    ->join('tipo_de_equipo as te', 'e.id_tipo', '=', 'te.id')
+                    ->select('te.nombre', DB::raw('count(*) as total'))
+                    ->groupBy('te.nombre');
+
+                $applyDateFilter($query, 're.created_at');
+                $results = $query->get();
 
                 $labels = $results->pluck('nombre');
                 $data = $results->pluck('total');
                 break;
 
-            case 'equipos_falla':
-                $results = DB::table('recepcion_de_equipo')
-                    ->select('falla_tecnica', DB::raw('count(*) as total'))
-                    ->where($dateFilter)
-                    ->groupBy('falla_tecnica')
-                    ->orderByDesc('total')
-                    ->limit(10) // Limit to top 10 fallas to avoid clutter
-                    ->get();
+            case 'entregados_atencion':
+                // C) Entregados por tipo de atención
+                $query = DB::table('entrega_de_equipo as ent')
+                    ->join('casos as c', 'ent.id_caso', '=', 'c.id')
+                    ->join('recepcion_de_equipo as re', 're.id_caso', '=', 'c.id')
+                    ->select('re.tipo_atencion', DB::raw('count(*) as total'))
+                    ->groupBy('re.tipo_atencion');
 
-                $labels = $results->pluck('falla_tecnica');
+                $applyDateFilter($query, 'ent.created_at');
+                $results = $query->get();
+
+                $labels = $results->pluck('tipo_atencion');
                 $data = $results->pluck('total');
                 break;
 
-            case 'rendimiento_tecnico':
-                $results = DB::table('recepcion_de_equipo')
-                    ->join('users', 'recepcion_de_equipo.id_usuario_tecnico_asignado', '=', 'users.id')
-                    ->select('users.name', DB::raw('count(*) as total'))
-                    ->where($dateFilter)
-                    ->groupBy('users.name')
-                    ->get();
+            case 'entregados_tipo_equipo':
+                // D) Equipos entregados por Tipo de equipo
+                // Note: user spec says join equipos on ent.id_equipo = e.id
+                // Need to verify if entrega_de_equipo has id_equipo or if it should go through casing
+                $query = DB::table('entrega_de_equipo as ent')
+                    ->join('equipos as e', 'ent.id_equipo', '=', 'e.id') // Assuming structure based on user prompt
+                    ->join('tipo_de_equipo as te', 'e.id_tipo', '=', 'te.id')
+                    ->select('te.nombre', DB::raw('count(*) as total'))
+                    ->groupBy('te.nombre');
 
-                $labels = $results->pluck('name');
+                $applyDateFilter($query, 'ent.created_at');
+                $results = $query->get();
+
+                $labels = $results->pluck('nombre');
                 $data = $results->pluck('total');
                 break;
 
-            case 'recepcion':
-                $results = DB::table('recepcion_de_equipo')
-                    ->select(DB::raw('DATE(created_at) as fecha'), DB::raw('count(*) as total'))
-                    ->where($dateFilter)
-                    ->groupBy('fecha')
-                    ->orderBy('fecha')
-                    ->get();
+            case 'piezas_soporte':
+                // E) Piezas/Atención por Soporte
+                $query = DB::table('documentacion_de_caso as doc')
+                    ->join('pieza_soporte as pz', 'doc.id_pieza_soporte', '=', 'pz.id')
+                    ->select('pz.nombre', DB::raw('SUM(doc.cantidad) as total'))
+                    ->groupBy('pz.nombre');
 
-                $labels = $results->pluck('fecha');
+                $applyDateFilter($query, 'doc.created_at');
+                $results = $query->get();
+
+                $labels = $results->pluck('nombre');
                 $data = $results->pluck('total');
                 break;
-
-        /*
-         case 'salida':
-         // Implement logic for salida/entrega if exists in recepcion_de_equipo or separate table
-         // Assuming 'entrega_de_equipo' table exists based on schema list but not detailed inspection
-         // defaulting to recepcion logic for now as placeholder or specific status
-         break;
-         */
         }
 
         return response()->json([
-            'labels' => $labels, // Labels for Chart.js
-            'data' => $data, // Data points for Chart.js
-            'raw' => $results ?? [] // Full data for Table
+            'labels' => $labels,
+            'data' => $data,
+            'raw' => $results
         ]);
     }
 }

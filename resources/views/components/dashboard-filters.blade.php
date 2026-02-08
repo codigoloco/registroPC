@@ -6,11 +6,11 @@
         <div>
            <x-label value="Tipo de Reporte" class="mb-2" />
            <select id="tipoReporte" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm w-full">
-                <option value="equipos_tipo">Equipos por Tipo</option>
-                <option value="equipos_falla">Equipos por Falla</option>
-                <option value="rendimiento_tecnico">Rendimiento Técnico</option>
-                <option value="recepcion">Recepción de Equipos</option>
-                <option value="salida">Salida de Equipos</option>
+                <option value="recibidos_atencion">Recibidos por tipo de atención</option>
+                <option value="recibidos_tipo_equipo">Recibidos por Tipo de equipo</option>
+                <option value="entregados_atencion">Entregados por tipo de atención</option>
+                <option value="entregados_tipo_equipo">Entregados por Tipo de equipo</option>
+                <option value="piezas_soporte">Piezas/Atención por Soporte</option>
            </select>
         </div>
 
