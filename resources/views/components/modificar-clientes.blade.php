@@ -95,7 +95,7 @@
                                     </svg>
                                 </div>
                                 <x-input type="text" placeholder="Cedula/RIF" class="w-full pl-10"
-                                    x-model="searchCedula" @keyup.enter="buscarCliente()" />
+                                    x-model="searchCedula" x-imask="'number'" @keyup.enter="buscarCliente()" />
                             </div>
                         </div>
                         <div class="flex gap-2">
@@ -127,12 +127,12 @@
                             <div>
                                 <x-label value="Nombre" class="mb-1" />
                                 <x-input type="text" name="nombre" placeholder="Nombre" class="w-full" maxlength="100"
-                                    x-model="cliente.nombre" required />
+                                    x-model="cliente.nombre" x-imask="'text'" required />
                             </div>
                             <div>
                                 <x-label value="Apellido" class="mb-1" />
                                 <x-input type="text" name="apellido" placeholder="Apellido" class="w-full"
-                                    maxlength="100" x-model="cliente.apellido" required />
+                                    maxlength="100" x-model="cliente.apellido" x-imask="'text'" required />
                             </div>
                             <div>
                                 <x-label value="Dirección" class="mb-1" />
@@ -170,7 +170,7 @@
                                     <template x-for="(tel, index) in telefonos" :key="index">
                                         <div class="flex items-center gap-2">
                                             <x-input type="text" name="telefonos[]" x-model="telefonos[index]"
-                                                placeholder="Número de teléfono" class="w-full" required />
+                                                placeholder="Número de teléfono" class="w-full" x-imask="'number'" required />
                                             <button type="button" x-show="telefonos.length > 1"
                                                 @click="telefonos.splice(index, 1)"
                                                 class="text-red-500 hover:text-red-700 transition-colors">

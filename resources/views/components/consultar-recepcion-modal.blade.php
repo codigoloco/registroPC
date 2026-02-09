@@ -73,7 +73,7 @@
                             class="mb-2 text-center font-bold text-blue-600 dark:text-blue-400" />
                         <div class="flex gap-2">
                             <x-input type="text" placeholder="Ej: 1" class="w-full" x-model="idCasoSearch"
-                                @keyup.enter="buscarPorCaso()" />
+                                x-imask="'number'" @keyup.enter="buscarPorCaso()" />
                             <x-button type="button" @click="buscarPorCaso()"
                                 class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800">
                                 <span x-show="!loading">
@@ -107,7 +107,7 @@
                             <div>
                                 <x-label value="ID Equipo" />
                                 <x-input type="text" name="id_equipo" class="w-full h-9" x-model="recepcion.id_equipo"
-                                    required />
+                                    x-imask="'number'" required />
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>

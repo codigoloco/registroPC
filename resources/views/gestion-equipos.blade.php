@@ -47,40 +47,40 @@
             @endif
 
             <!-- Botones para abrir los modales -->
-            <div class="flex flex-col items-center gap-6">
-                <!-- Fila 1: Equipos -->
-                <div class="flex flex-wrap justify-center gap-4 w-full">
-                    <x-button @click="showEquipoModal = true"
-                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                        {{ __('REGISTRAR EQUIPO') }}
-                    </x-button>
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-6 max-w-6xl mx-auto">
+                {{-- Fila 1: 3 Botones (33% cada uno -> col-span-2) --}}
+                
+                <!-- 1. Registrar Equipo -->
+                <x-button @click="showEquipoModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg py-4 justify-center w-full md:col-span-2">
+                    {{ __('REGISTRAR EQUIPO') }}
+                </x-button>
 
-                    <x-button @click="showModificarModal = true"
-                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                        {{ __('MODIFICAR EQUIPO') }}
-                    </x-button>
-                </div>
+                <!-- 2. Modificar Equipo -->
+                <x-button @click="showModificarModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg py-4 justify-center w-full md:col-span-2">
+                    {{ __('MODIFICAR EQUIPO') }}
+                </x-button>
 
-                <!-- Fila 2: Procesos -->
-                <div class="flex flex-wrap justify-center gap-4 w-full">
-                    <x-button @click="showRecepcionModal = true"
-                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                        {{ __('REGISTRAR RECEPCIÓN DE EQUIPOS') }}
-                    </x-button>
+                <!-- 3. Consulta / Modificar Registro de Recepción -->
+                <x-button @click="showConsultarModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg py-4 justify-center w-full md:col-span-2 text-center leading-tight">
+                    {{ __('CONSULTA / MODIFICAR REGISTRO DE RECEPCIÓN') }}
+                </x-button>
 
-                    <x-button @click="showModal = true"
-                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                        {{ __('REGISTRAR SALIDA DE EQUIPO') }}
-                    </x-button>
-                </div>
+                {{-- Fila 2: 2 Botones (50% cada uno -> col-span-3) --}}
 
-                <!-- Fila 3: Consultas -->
-                <div class="flex flex-wrap justify-center gap-4 w-full">
-                    <x-button @click="showConsultarModal = true"
-                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                        {{ __('CONSULTA / MODIFICAR REGISTRO DE RECEPCIÓN') }}
-                    </x-button>
-                </div>
+                <!-- 4. Registrar Recepción de Equipos -->
+                <x-button @click="showRecepcionModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg py-4 justify-center w-full md:col-span-3">
+                    {{ __('REGISTRAR RECEPCIÓN DE EQUIPOS') }}
+                </x-button>
+
+                <!-- 5. Registrar Salida de Equipo -->
+                <x-button @click="showModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg py-4 justify-center w-full md:col-span-3">
+                    {{ __('REGISTRAR SALIDA DE EQUIPO') }}
+                </x-button>
             </div>
 
             <!-- Tabla de Equipos Registrados -->

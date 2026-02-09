@@ -89,61 +89,62 @@
             <x-nav-link href="{{ route('gestion-auditoria') }}" :active="request()->routeIs('gestion-auditoria')">
                 {{ __('Auditoria') }}
             </x-nav-link>
-        </div>
 
-        <!-- User Dropdown (Sidebar Footer) -->
-        <div class="mt-auto border-t border-gray-100 dark:border-gray-700 p-4">
-            <div class="relative">
-                <x-dropdown align="top-left" width="48"> <!-- Changed alignment to top-left -->
-                    <x-slot name="trigger">
-                        @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                            <button class="flex items-center text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition w-full">
-                                <img class="size-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
-                                <span class="ml-2 text-gray-700 dark:text-gray-300">{{ Auth::user()->name }}</span>
-                            </button>
-                        @else
-                            <span class="inline-flex rounded-md w-full">
-                                <button type="button" class="inline-flex items-center w-full px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
-                                    {{ Auth::user()->name }}
-                                    <svg class="ms-auto -me-0.5 size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                    </svg>
+            <!-- User Dropdown (Moved below Auditoria) -->
+            <div class="pt-4 border-t border-gray-100 dark:border-gray-700 mt-4">
+                <div class="relative">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
+                                <button class="flex items-center text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition w-full">
+                                    <img class="size-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
+                                    <span class="ml-2 text-gray-700 dark:text-gray-300">{{ Auth::user()->name }}</span>
                                 </button>
-                            </span>
-                        @endif
-                    </x-slot>
+                            @else
+                                <span class="inline-flex rounded-md w-full">
+                                    <button type="button" class="inline-flex items-center w-full px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
+                                        {{ Auth::user()->name }}
+                                        <svg class="ms-auto -me-0.5 size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                    </button>
+                                </span>
+                            @endif
+                        </x-slot>
 
-                    <x-slot name="content">
-                        <!-- Account Management -->
-                        <div class="block px-4 py-2 text-xs text-gray-400">
-                            {{ __('Administrar Cuenta') }}
-                        </div>
+                        <x-slot name="content">
+                            <!-- Account Management -->
+                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                {{ __('Administrar Cuenta') }}
+                            </div>
 
-                        <x-dropdown-link href="{{ route('profile.show') }}">
-                            {{ __('Perfil') }}
-                        </x-dropdown-link>
-
-                        @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
-                            <x-dropdown-link href="{{ route('api-tokens.index') }}">
-                                {{ __('Tokens de API') }}
+                            <x-dropdown-link href="{{ route('profile.show') }}">
+                                {{ __('Perfil') }}
                             </x-dropdown-link>
-                        @endif
 
-                        <div class="border-t border-gray-200 dark:border-gray-600"></div>
+                            @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
+                                <x-dropdown-link href="{{ route('api-tokens.index') }}">
+                                    {{ __('Tokens de API') }}
+                                </x-dropdown-link>
+                            @endif
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}" x-data>
-                            @csrf
+                            <div class="border-t border-gray-200 dark:border-gray-600"></div>
 
-                            <x-dropdown-link href="{{ route('logout') }}"
-                                     @click.prevent="$root.submit();">
-                                {{ __('Cerrar Sesión') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
+                            <!-- Authentication -->
+                            <form method="POST" action="{{ route('logout') }}" x-data>
+                                @csrf
+
+                                <x-dropdown-link href="{{ route('logout') }}"
+                                         @click.prevent="$root.submit();">
+                                    {{ __('Cerrar Sesión') }}
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
             </div>
         </div>
+    </div>
+
     </div>
 
     <!-- Mobile Menu (Original Structure adapted) -->

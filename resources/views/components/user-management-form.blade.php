@@ -43,11 +43,11 @@
                 {{-- Row 1 --}}
                 <div>
                     <x-label value="Nombre" class="mb-1" />
-                    <x-input type="text" name="name" placeholder="Nombre" class="w-full" x-model="user.name" required />
+                    <x-input type="text" name="name" placeholder="Nombre" class="w-full" x-model="user.name" x-imask="'text'" required />
                 </div>
                 <div>
                     <x-label value="Apellido" class="mb-1" />
-                    <x-input type="text" name="lastname" placeholder="Apellido" class="w-full" x-model="user.lastname"
+                    <x-input type="text" name="lastname" placeholder="Apellido" class="w-full" x-model="user.lastname" x-imask="'text'"
                         required />
                 </div>
 

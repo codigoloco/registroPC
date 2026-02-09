@@ -41,17 +41,17 @@
                             <div>
                                 <x-label value="Cedula/RIF" class="mb-1" />
                                 <x-input type="text" name="cedula" placeholder="Cedula/RIF" class="w-full"
-                                    maxlength="100" required />
+                                    maxlength="100" x-imask="'number'" required />
                             </div>
                             <div>
                                 <x-label value="Nombre" class="mb-1" />
                                 <x-input type="text" name="nombre" placeholder="Nombre" class="w-full" maxlength="100"
-                                    required />
+                                    x-imask="'text'" required />
                             </div>
                             <div>
                                 <x-label value="Apellido" class="mb-1" />
                                 <x-input type="text" name="apellido" placeholder="Apellido" class="w-full"
-                                    maxlength="100" required />
+                                    maxlength="100" x-imask="'text'" required />
                             </div>
                             <div>
                                 <x-label value="Dirección" class="mb-1" />
@@ -89,7 +89,7 @@
                                     <template x-for="(contact, index) in contacts" :key="index">
                                         <div class="flex items-center gap-2">
                                             <x-input type="text" name="telefonos[]" x-model="contacts[index]"
-                                                placeholder="Número de teléfono" class="w-full" required />
+                                                placeholder="Número de teléfono" class="w-full" x-imask="'number'" required />
                                             <button type="button" x-show="contacts.length > 1"
                                                 @click="contacts.splice(index, 1)"
                                                 class="text-red-500 hover:text-red-700 transition-colors">
