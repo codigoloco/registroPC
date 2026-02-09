@@ -142,8 +142,8 @@
 
                     <div class="mt-6">
                         <x-label value="Observación General" class="mb-1" />
-                        <textarea name="observacion" placeholder="Observación (Opcional)"
-                            class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-24"></textarea>
+                        <textarea name="observacion" placeholder="Observación"
+                            class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-24" required></textarea>
                     </div>
                 </div>
 

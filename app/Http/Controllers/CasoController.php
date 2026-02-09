@@ -48,12 +48,13 @@ class CasoController extends Controller
                 'id_usuario' => Auth::id(),
                 'id_caso' => $caso->id,
                 'sentencia' => 'INSERT',
-                'estado_final' => json_encode(['nota' => 'Caso creado exitosamente.', 'datos' => $caso->toArray()]),                                    
+                'estado_final' => json_encode(['nota' => 'Caso creado exitosamente.', 'datos' => $caso->toArray()]),
                 'ip' => $request->ip(),
             ]);
 
             return redirect()->back()->with('success', "Caso #{$caso->id} creado exitosamente.");
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al crear caso: ' . $e->getMessage());
         }
     }
@@ -69,7 +70,7 @@ class CasoController extends Controller
             'id_pieza_soporte.*' => 'required|integer|exists:pieza_soporte,id',
             'cantidad' => 'required|array',
             'cantidad.*' => 'required|integer|min:1',
-            'observacion' => 'nullable|string',
+            'observacion' => 'required|string',
         ]);
 
         try {
@@ -94,7 +95,8 @@ class CasoController extends Controller
             DB::commit();
 
             return redirect()->back()->with('success', 'Caso documentado exitosamente.');
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error al documentar caso: ' . $e->getMessage());
         }
@@ -116,7 +118,7 @@ class CasoController extends Controller
         try {
             $caso = Caso::findOrFail($request->id);
             $estadoInicial = $caso->toArray();
-            
+
             $caso->update([
                 'descripcion_falla' => $request->descripcion_falla,
                 'pieza_sugerida' => $request->pieza_sugerida,
@@ -135,7 +137,8 @@ class CasoController extends Controller
             ]);
 
             return redirect()->back()->with('success', "Caso #{$caso->id} actualizado exitosamente.");
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al actualizar caso: ' . $e->getMessage());
         }
     }
