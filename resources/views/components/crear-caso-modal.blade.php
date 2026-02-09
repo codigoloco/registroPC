@@ -45,7 +45,7 @@
                             <label class="text-sm text-gray-700 dark:text-gray-300">Cedula Cliente</label>
                             <div class="col-span-2 relative">
                                 <x-input type="text" name="id_cliente" class="w-full" x-model="searchCedula"
-                                    @keyup.enter="buscarCliente()" @blur="buscarCliente()"
+                                    x-imask="'number'" @keyup.enter="buscarCliente()" @blur="buscarCliente()"
                                     placeholder="Ingresa Cedula/RIF" required />
                                 <button type="button" @click="buscarCliente()"
                                     class="absolute right-2 top-1.5 text-blue-500 hover:text-blue-700 focus:outline-none">

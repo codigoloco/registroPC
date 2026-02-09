@@ -35,11 +35,11 @@
                     <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <x-label value="Nombre" class="mb-1" />
-                            <x-input type="text" name="name" placeholder="Nombre" class="w-full" required />
+                            <x-input type="text" name="name" placeholder="Nombre" class="w-full" x-imask="'text'" required />
                         </div>
                         <div>
                             <x-label value="Apellido" class="mb-1" />
-                            <x-input type="text" name="lastname" placeholder="Apellido" class="w-full" required />
+                            <x-input type="text" name="lastname" placeholder="Apellido" class="w-full" x-imask="'text'" required />
                         </div>
                         <div class="md:col-span-2">
                             <x-label value="Correo Electrónico" class="mb-1" />

@@ -68,11 +68,11 @@
                         <div class="space-y-4">
                             <div>
                                 <x-label value="ID Caso" class="mb-1" />
-                                <x-input type="text" name="id_caso" placeholder="ID Caso" class="w-full" required />
+                                <x-input type="text" name="id_caso" placeholder="ID Caso" class="w-full" x-imask="'number'" required />
                             </div>
                             <div>
                                 <x-label value="ID Equipo" class="mb-1" />
-                                <x-input type="text" name="id_equipo" placeholder="ID Equipo" class="w-full" required />
+                                <x-input type="text" name="id_equipo" placeholder="ID Equipo" class="w-full" x-imask="'number'" required />
                             </div>
                         </div>
 
