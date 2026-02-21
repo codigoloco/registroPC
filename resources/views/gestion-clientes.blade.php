@@ -10,10 +10,16 @@
 
             <!-- Botones de Acción -->
             <div class="flex flex-wrap justify-center gap-4">
-                <x-button @click="showModal = true"
-                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('Registrar Cliente') }}
-                </x-button>
+                @if(!(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'soporte'))
+                    <x-button @click="showModal = true"
+                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                        {{ __('Registrar Cliente') }}
+                    </x-button>
+                    <x-button @click="showModalModificarClientes = true"
+                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                        {{ __('Modificar Clientes') }}
+                    </x-button>
+                @endif
 
                 <x-button @click="showModalModificarClientes = true"
                     class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
@@ -68,8 +74,11 @@
                 @endforeach
             </x-data-table>
 
-            <!-- Modal Component -->
-            <x-registrar-clientes />
+            <!-- Modales -->
+            @if(!(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'soporte'))
+                <x-registrar-clientes />
+                <x-modificar-clientes />
+            @endif
 
             <x-modificar-clientes />
 

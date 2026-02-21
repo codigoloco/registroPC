@@ -46,10 +46,10 @@
                 <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-base">{{ __('Filtros de Consulta') }}</h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                    <!-- Usuario -->
+                    <!-- Usuario/Correo -->
                     <div>
-                        <x-label value="Usuario" class="mb-1" />
-                        <x-input type="text" placeholder="ID Usuario / Nombre" class="w-full" x-model="filters.usuario" />
+                        <x-label value="Usuario / Correo" class="mb-1" />
+                        <x-input type="text" placeholder="ID, nombre o correo" class="w-full" x-model="filters.usuario" />
                     </div>
                      <!-- Caso -->
                     <div>
@@ -97,6 +97,7 @@
                             <tr>
                                 <th class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider">ID</th>
                                 <th class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider">Usuario</th>
+                                <th class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider">Correo</th>
                                 <th class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider">Caso</th>
                                 <th class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider">Acción</th>
                                 <th class="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider">IP</th>
@@ -116,6 +117,7 @@
                                             <span class="text-[10px] text-gray-500" x-text="'ID: ' + item.id_usuario"></span>
                                         </div>
                                     </td>
+                                    <td class="px-3 py-3 text-gray-600 dark:text-gray-400" x-text="item.usuario ? item.usuario.email : 'N/A'"></td>
                                     <td class="px-3 py-3 text-gray-900 dark:text-gray-100" x-text="item.id_caso ? '#' + item.id_caso : 'N/A'"></td>
                                     <td class="px-3 py-3">
                                         <span class="px-2 py-1 rounded-full text-[10px] font-bold" 

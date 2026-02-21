@@ -30,6 +30,40 @@ class RecepcionController extends Controller
     }
 
     /**
+     * Página imprimible que muestra el listado completo de recepciones.
+     *
+     * No aplica paginación porque el objetivo es generar un documento único
+     * que el usuario pueda exportar a PDF desde el navegador (Ctrl+P).
+     */
+    public function pdf()
+    {
+        $recepciones = RecepcionDeEquipo::with([
+            'caso.cliente',
+            'equipo.modelo',
+            'equipo.tipo',
+            'usuarioRecepcion'
+        ])->orderBy('created_at', 'desc')->get();
+
+        return view('recepcion-pdf', compact('recepciones'));
+    }
+
+    /**
+     * Página imprimible que muestra el listado completo de salidas de equipo.
+     * Similar a `pdf()` pero para el modelo `EntregaDeEquipo`.
+     */
+    public function pdfSalidas()
+    {
+        $salidas = EntregaDeEquipo::with([
+            'caso.cliente',
+            'equipo.modelo',
+            'equipo.tipo',
+            'usuarioEntrega'
+        ])->orderBy('created_at', 'desc')->get();
+
+        return view('salidas-pdf', compact('salidas'));
+    }
+
+    /**
      * Obtiene todas las salidas de equipo de forma paginada con sus relaciones.
      */
     public function getSalidasPaged()

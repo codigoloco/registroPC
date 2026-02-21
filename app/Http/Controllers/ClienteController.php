@@ -25,6 +25,11 @@ class ClienteController extends Controller
      */
     public function saveCliente(Request $request)
     {
+        // impedir que el personal de soporte registre nuevos clientes
+        $user = Auth::user();
+        if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
+            abort(403);
+        }
         $request->validate([
             'cedula' => 'required|integer|unique:clientes,id',
             'nombre' => 'required|string|max:100',
@@ -84,6 +89,11 @@ class ClienteController extends Controller
      */
     public function updateCliente(Request $request)
     {
+        // opcional: también podemos bloquear la modificación por parte de soporte
+        $user = Auth::user();
+        if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
+            abort(403);
+        }
         $request->validate([
             'cedula' => 'required|integer|exists:clientes,id',
             'nombre' => 'required|string|max:100',

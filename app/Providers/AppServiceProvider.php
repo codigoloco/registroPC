@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // aseguramos que la aplicación utilice el idioma configurado
+        // (normalmente 'es' a partir de config/app.php y el .env)
+        app()->setLocale(config('app.locale'));
         \Illuminate\Support\Facades\Event::listen(
             \Illuminate\Auth\Events\Login::class,
             function ($event) {

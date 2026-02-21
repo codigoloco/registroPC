@@ -12,6 +12,8 @@ Route::middleware([
     Route::get('/', [\App\Http\Controllers\HomeController::class , 'index'])->name('home');
 
     Route::get('/estadisticas', [\App\Http\Controllers\ReporteController::class , 'index'])->name('estadisticas');
+    // PDF imprimible de las estadísticas (usa los mismos parámetros que el dashboard)
+    Route::get('/estadisticas/pdf', [\App\Http\Controllers\ReporteController::class , 'pdf'])->name('estadisticas.pdf');
 
     Route::get('/gestion-equipos', [\App\Http\Controllers\EquipoController::class , 'index'])->name('gestion-equipos');
 
@@ -37,6 +39,10 @@ Route::middleware([
         Route::get('/recepcion/search/{id_caso}', [\App\Http\Controllers\RecepcionController::class , 'findByCaso'])->name('recepcion.search');
         Route::get('/recepcion/all', [\App\Http\Controllers\RecepcionController::class , 'getAllPaged'])->name('recepcion.all');
         Route::get('/salida/all', [\App\Http\Controllers\RecepcionController::class , 'getSalidasPaged'])->name('salida.all');
+        // reporte imprimible / PDF de todas las recepciones de equipo
+        Route::get('/recepcion/pdf', [\App\Http\Controllers\RecepcionController::class, 'pdf'])->name('recepcion.pdf');
+        // PDF imprimible de las salidas de equipo
+        Route::get('/salidas/pdf', [\App\Http\Controllers\RecepcionController::class, 'pdfSalidas'])->name('salidas.pdf');
 
         // Rutas para Usuarios
         Route::post('/users/save', [\App\Http\Controllers\UserController::class , 'saveUser'])->name('users.save');
@@ -56,6 +62,8 @@ Route::middleware([
         Route::get('/casos/disponibles', [\App\Http\Controllers\CasoController::class , 'getCasosDisponibles'])->name('casos.disponibles');
         Route::get('/tecnicos/all', [\App\Http\Controllers\CasoController::class , 'getTecnicos'])->name('tecnicos.all');
         Route::post('/casos/asignar-tecnico', [\App\Http\Controllers\CasoController::class , 'asignarTecnico'])->name('casos.asignar-tecnico');
+            // listado de casos asignados (JSON). Si el usuario es administrador devuelve todos, de lo contrario solo los propios.
+            Route::get('/casos/asignados', [\App\Http\Controllers\CasoController::class , 'getCasosAsignados'])->name('casos.asignados');
         Route::get('/piezas', [\App\Http\Controllers\CasoController::class , 'getPiezas'])->name('piezas.index');
 
         // Rutas para Reportes

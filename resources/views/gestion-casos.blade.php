@@ -7,7 +7,24 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"
-            x-data="{ showModal: false, showDocumentarModal: false, showRegistrarCasoModal: false, showCrearCasoModal: false, showAsignarTecnicoModal: false }">
+            x-data="{
+                showModal: false,
+                showDocumentarModal: false,
+                showRegistrarCasoModal: false,
+                showCrearCasoModal: false,
+                showAsignarTecnicoModal: false,
+                showAssignedCasesModal: false,
+                assignedCount: 0,
+                async init() {
+                    // obtener cantidad inicial de casos asignados para mostrar en el badge
+                    try {
+                        const response = await axios.get('/casos/asignados');
+                        this.assignedCount = response.data.length;
+                    } catch (e) {
+                        console.error('No se pudo cargar el conteo de casos asignados', e);
+                    }
+                }
+            }">
 
             <!-- Botones para abrir los modales -->
             <div class="flex flex-wrap justify-center gap-4">
@@ -15,20 +32,29 @@
                     class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
                     {{ __('Crear Caso') }}
                 </x-button>
+                @if(!(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'soporte'))
+                    <x-button @click="showAsignarTecnicoModal = true"
+                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                        {{ __('Asignar Técnico') }}
+                    </x-button>
 
-                <x-button @click="showAsignarTecnicoModal = true"
-                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('Asignar Técnico') }}
-                </x-button>
-
-                <x-button @click="showRegistrarCasoModal = true"
-                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('Consultar / Modificar Caso') }}
-                </x-button>
+                    <x-button @click="showRegistrarCasoModal = true"
+                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                        {{ __('Consultar / Modificar Caso') }}
+                    </x-button>
+                @endif
 
                 <x-button @click="showDocumentarModal = true"
                     class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
                     {{ __('Documentar Caso') }}
+                </x-button>
+
+                <!-- botón para mostrar casos asignados al técnico o todos si es admin -->
+                <x-button @click="showAssignedCasesModal = true; $dispatch('refresh-assigned-cases')"
+                    class="bg-green-600 hover:bg-green-700 active:bg-green-800 border-green-600 focus:ring-green-500 text-lg px-8 py-3 flex items-center">
+                    {{ __('Mis Casos') }}
+                    <span x-show="assignedCount > 0" x-text="assignedCount"
+                        class="ml-2 inline-block bg-white text-green-600 text-xs font-semibold px-2 py-0.5 rounded-full"></span>
                 </x-button>
             </div>
 
@@ -88,13 +114,20 @@
             <x-crear-caso-modal />
 
             <!-- Modal Component: Registrar Caso (Nuevo) -->
-            <x-registrar-caso-modal />
+            @if(!(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'soporte'))
+                <x-registrar-caso-modal />
+            @endif
 
             <!-- Modal Component: Documentar Caso -->
             <x-documentar-caso-modal />
 
             <!-- Modal Component: Asignar Técnico -->
-            <x-asignar-tecnico-modal />
+            @if(!(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'soporte'))
+                <x-asignar-tecnico-modal />
+            @endif
+
+            <!-- Modal Component: Casos Asignados -->
+            <x-casos-asignados-modal />
 
 
         </div>

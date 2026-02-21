@@ -78,13 +78,17 @@
                 {{ __('Equipos') }}
             </x-nav-link>
 
-            <x-nav-link href="{{ route('estadisticas') }}" :active="request()->routeIs('estadisticas')">
-                {{ __('Gráficas y Estadisticas') }}
-            </x-nav-link>
+            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) !== 'soporte')
+                <x-nav-link href="{{ route('estadisticas') }}" :active="request()->routeIs('estadisticas')">
+                    {{ __('Gráficas y Estadisticas') }}
+                </x-nav-link>
+            @endif
 
-            <x-nav-link href="{{ route('gestion-usuarios') }}" :active="request()->routeIs('gestion-usuarios')">
-                {{ __('Usuarios') }}
-            </x-nav-link>
+            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) !== 'soporte')
+                <x-nav-link href="{{ route('gestion-usuarios') }}" :active="request()->routeIs('gestion-usuarios')">
+                    {{ __('Usuarios') }}
+                </x-nav-link>
+            @endif
 
             <x-nav-link href="{{ route('gestion-auditoria') }}" :active="request()->routeIs('gestion-auditoria')">
                 {{ __('Auditoria') }}

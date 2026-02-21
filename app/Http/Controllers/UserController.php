@@ -23,6 +23,24 @@ class UserController extends Controller
     }
 
     /**
+     * Añadimos un middleware interno para bloquear el acceso a cualquier
+     * acción del controlador si el usuario autenticado pertenece al rol
+     * "soporte". De esta forma se evita que un técnico acceda mediante URL
+     * directa a la gestión de usuarios, incluso aunque el menú lo oculte.
+     */
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $user = Auth::user();
+            if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
+                // podemos redirigir a inicio con mensaje o abortar 403
+                abort(403);
+            }
+            return $next($request);
+        });
+    }
+
+    /**
      * Crea un nuevo usuario.
      */
     public function saveUser(Request $request)

@@ -48,10 +48,12 @@
 
             <!-- Botones para abrir los modales -->
             <div class="flex flex-wrap justify-center gap-4">
-                <x-button @click="showCrearModal = true"
-                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('CREAR USUARIO') }}
-                </x-button>
+                @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) !== 'soporte')
+                    <x-button @click="showCrearModal = true"
+                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                        {{ __('CREAR USUARIO') }}
+                    </x-button>
+                @endif
 
                 <x-button @click="showModal = true"
                     class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">

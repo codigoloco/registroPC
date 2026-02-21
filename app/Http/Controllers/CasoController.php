@@ -108,6 +108,11 @@ class CasoController extends Controller
      */
     public function updateCaso(Request $request)
     {
+        // impedir que el personal de soporte (técnicos) modifique casos
+        $user = Auth::user();
+        if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
+            abort(403);
+        }
         $request->validate([
             'id' => 'required|exists:casos,id',
             'descripcion_falla' => 'required|string|max:100',
@@ -192,10 +197,39 @@ class CasoController extends Controller
     }
 
     /**
+     * Devuelve los casos asignados en formato JSON. Si el usuario autenticado
+     * tiene rol de administrador se devuelven todos los casos; de lo contrario
+     * sólo los casos donde el campo id_usuario coincide con el usuario logeado.
+     *
+     * Esta ruta será consumida por el modal "Mis casos asignados" para que el
+     * técnico pueda verificar rápidamente sus pendientes.
+     */
+    public function getCasosAsignados()
+    {
+        $user = Auth::user();
+
+        $query = Caso::with(['cliente', 'tecnico']);
+
+        // asumimos que el nombre del rol administrador es 'administrador'
+        if (! $user->rol || strtolower($user->rol->nombre) !== 'administrador') {
+            $query->where('id_usuario', $user->id);
+        }
+
+        $casos = $query->orderBy('id', 'desc')->get();
+
+        return response()->json($casos);
+    }
+
+    /**
      * Asigna un técnico a un caso específico.
      */
     public function asignarTecnico(Request $request)
     {
+        // restricción: sólo administradores pueden reasignar técnicos
+        $user = Auth::user();
+        if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
+            abort(403);
+        }
         $request->validate([
             'id_caso' => 'required|exists:casos,id',
             'id_usuario' => 'required|exists:users,id',

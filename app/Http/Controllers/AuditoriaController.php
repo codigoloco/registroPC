@@ -26,8 +26,10 @@ class AuditoriaController extends Controller
         if ($request->filled('usuario')) {
             $usuario = $request->usuario;
             $query->whereHas('usuario', function($q) use ($usuario) {
-                $q->where('name', 'like', "%{$usuario}%")
-                  ->orWhere('id', 'like', "%{$usuario}%");
+                                // además de nombre o id, permitimos buscar por correo
+                                $q->where('name', 'like', "%{$usuario}%")
+                                    ->orWhere('id', 'like', "%{$usuario}%")
+                                    ->orWhere('email', 'like', "%{$usuario}%");
             });
         }
 
