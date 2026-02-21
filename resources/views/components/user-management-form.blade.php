@@ -1,3 +1,4 @@
+@props(['roles'])
 <div>
     <!-- Sección: Consultar Usuario -->
     <div>
@@ -14,12 +15,35 @@
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
-                    <x-input type="text" placeholder="Ingrese Correo" class="w-full pl-10" x-model="searchEmail"
-                        @keyup.enter="buscarUsuario()" />
+                    <x-input type="text" placeholder="Buscar por correo o nombre..." class="w-full pl-10" x-model="searchEmail"
+                        @focus="showEmailList = true"
+                        @click.away="setTimeout(() => showEmailList = false, 200)"
+                        @keyup.enter="showEmailList = false; buscarUsuario()"
+                        autocomplete="off" />
+
+                    <!-- Dropdown de correos -->
+                    <div x-show="showEmailList && filteredEmails.length > 0"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 -translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-1"
+                         class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                        <template x-for="userItem in filteredEmails" :key="userItem.email">
+                            <div @click="selectEmail(userItem)"
+                                 class="px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100" x-text="userItem.email"></span>
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400" x-text="userItem.name + ' ' + (userItem.lastname || '')"></div>
+                            </div>
+                        </template>
+                    </div>
                 </div>
             </div>
             <div class="flex flex-wrap gap-2">
-                <x-button type="button" @click="buscarUsuario()"
+                <x-button type="button" @click="showEmailList = false; buscarUsuario()"
                     class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500">
                     <span x-show="!loading">{{ __('Consultar') }}</span>
                     <span x-show="loading">{{ __('Buscando...') }}</span>
@@ -93,17 +117,15 @@
                 </div>
             </div>
 
-            {{-- Right Column: Roles --}}
             <div class="space-y-4">
                 <div>
                     <x-label value="Rol / Permiso" class="mb-2" />
-                    <select name="role" x-model="user.role" required
+                    <select name="id_rol" x-model="user.id_rol" required
                         class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
                         <option value="">{{ __('Seleccione un rol...') }}</option>
-                        <option value="Recepcionista">Recepcionista</option>
-                        <option value="Soporte">Soporte</option>
-                        <option value="Supervisor">Supervisor</option>
-                        <option value="Administrador">Administrador</option>
+                        @foreach($roles as $rol)
+                            <option value="{{ $rol->id }}">{{ ucfirst($rol->nombre) }}</option>
+                        @endforeach
                     </select>
                 </div>
 

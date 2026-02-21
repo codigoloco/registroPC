@@ -28,6 +28,7 @@ Route::middleware([
         Route::post('/equipos/save', [\App\Http\Controllers\EquipoController::class , 'saveEquipo'])->name('equipos.save');
         Route::post('/equipos/update', [\App\Http\Controllers\EquipoController::class , 'updateEquipo'])->name('equipos.update');
         Route::get('/equipos/search/{serial}', [\App\Http\Controllers\EquipoController::class , 'findBySerial'])->name('equipos.search');
+        Route::get('/equipos/all', [\App\Http\Controllers\EquipoController::class , 'getAllEquipos'])->name('equipos.all');
 
         // Rutas para Recepción
         Route::post('/recepcion/save', [\App\Http\Controllers\RecepcionController::class , 'saveRecepcion'])->name('recepcion.save');
@@ -52,6 +53,9 @@ Route::middleware([
         Route::post('/casos/update', [\App\Http\Controllers\CasoController::class , 'updateCaso'])->name('casos.update');
         Route::post('/casos/documentar', [\App\Http\Controllers\CasoController::class , 'documentarCaso'])->name('casos.documentar');
         Route::get('/casos/search/{id}', [\App\Http\Controllers\CasoController::class , 'findById'])->name('casos.search');
+        Route::get('/casos/disponibles', [\App\Http\Controllers\CasoController::class , 'getCasosDisponibles'])->name('casos.disponibles');
+        Route::get('/tecnicos/all', [\App\Http\Controllers\CasoController::class , 'getTecnicos'])->name('tecnicos.all');
+        Route::post('/casos/asignar-tecnico', [\App\Http\Controllers\CasoController::class , 'asignarTecnico'])->name('casos.asignar-tecnico');
         Route::get('/piezas', [\App\Http\Controllers\CasoController::class , 'getPiezas'])->name('piezas.index');
 
         // Rutas para Reportes

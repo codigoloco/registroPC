@@ -1,5 +1,11 @@
+@once
+    @push('scripts')
+        @vite('resources/js/registrarCaso.js')
+    @endpush
+@endonce
+
 <div x-show="showRegistrarCasoModal" style="display: none;"
-    class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0">
+    class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0" x-data="registrarCaso()">
 
     <!-- Fondo Oscuro (Backdrop) -->
     <div x-show="showRegistrarCasoModal" class="fixed inset-0 transform transition-all"
@@ -17,37 +23,7 @@
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-data="{
-            searchId: '',
-            caso: null,
-            loading: false,
-            error: '',
-            buscarCaso() {
-                if (!this.searchId) return;
-                this.loading = true;
-                this.error = '';
-                this.caso = null;
-
-                fetch(`/casos/search/${this.searchId}`, {
-                    headers: { 'Accept': 'application/json' }
-                })
-                .then(async response => {
-                    const data = await response.json();
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Caso no encontrado');
-                    }
-                    return data;
-                })
-                .then(data => {
-                    this.caso = data;
-                })
-                .catch(err => {
-                    this.error = err.message;
-                    this.caso = null;
-                })
-                .finally(() => this.loading = false);
-            }
-        }">
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
 
         <!-- Encabezado -->
         <div class="bg-blue-600 text-white px-6 py-4 flex items-center justify-between shadow-sm">
@@ -61,7 +37,7 @@
 
         <form action="{{ route('casos.update') }}" method="POST">
             @csrf
-            <input type="hidden" name="id" x-bind:value="caso ? caso.id : ''">
+            <input type="hidden" name="id" x-bind:value="caso.id || ''">
 
             <div class="p-8 space-y-6">
 
@@ -71,8 +47,31 @@
                     </h3>
                     <div class="flex gap-4">
                         <div class="flex-grow relative">
-                            <x-input type="text" placeholder="ID del Caso" class="w-full" x-model="searchId"
-                                @keyup.enter="buscarCaso()" />
+                            <x-input 
+                                type="text" 
+                                placeholder="Buscar ID o Cliente..." 
+                                class="w-full" 
+                                x-model="searchId"
+                                @focus="showCasosList = true"
+                                @click.away="showCasosList = false"
+                                @keyup.enter="buscarCaso()"
+                                autocomplete="off"
+                            />
+                            
+                            <div x-show="showCasosList && filteredCasos.length > 0" 
+                                 class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                <template x-for="caso in filteredCasos" :key="caso.id">
+                                    <div @click="selectCaso(caso)" 
+                                         class="px-4 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors">
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="font-bold text-blue-600 dark:text-blue-400" x-text="'#' + caso.id"></span>
+                                            <span class="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 capitalize" x-text="caso.estatus"></span>
+                                        </div>
+                                        <div class="text-xs text-gray-700 dark:text-gray-300 font-medium" x-text="caso.cliente.nombre + ' ' + (caso.cliente.apellido || '')"></div>
+                                    </div>
+                                </template>
+                            </div>
+
                             <div x-show="loading" class="absolute right-3 top-2.5">
                                 <svg class="animate-spin h-5 w-5 text-blue-500" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -92,7 +91,7 @@
                 </div>
 
                 <!-- Detalles del Caso -->
-                <div x-show="caso" x-transition>
+                <div x-show="caso.id" x-transition>
                     <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-base">{{ __('Detalles del Caso') }}
                     </h3>
 
@@ -103,7 +102,7 @@
                             <label class="text-sm text-gray-700 dark:text-gray-300">Cliente</label>
                             <div class="col-span-2">
                                 <p class="text-sm font-bold text-blue-600"
-                                    x-text="caso ? caso.cliente.nombre + ' ' + (caso.cliente.apellido || '') : ''"></p>
+                                    x-text="caso.cliente.nombre + ' ' + (caso.cliente.apellido || '')"></p>
                             </div>
                         </div>
 
@@ -112,7 +111,7 @@
                             <label class="text-sm text-gray-700 dark:text-gray-300">Descripción Falla</label>
                             <div class="col-span-2">
                                 <x-input type="text" name="descripcion_falla" class="w-full" maxlength="100" required
-                                    x-bind:value="caso ? caso.descripcion_falla : ''" />
+                                    x-model="caso.descripcion_falla" />
                             </div>
                         </div>
 
@@ -121,7 +120,7 @@
                             <label class="text-sm text-gray-700 dark:text-gray-300">Pieza Sugerida</label>
                             <div class="col-span-2">
                                 <x-input type="text" name="pieza_sugerida" class="w-full" maxlength="100"
-                                    placeholder="Opcional" x-bind:value="caso ? caso.pieza_sugerida : ''" />
+                                    placeholder="Opcional" x-model="caso.pieza_sugerida" />
                             </div>
                         </div>
 
@@ -130,7 +129,7 @@
                             <label class="text-sm text-gray-700 dark:text-gray-300">Forma de Atención</label>
                             <div class="col-span-2">
                                 <select name="forma_de_atencion"
-                                    x-bind:value="caso ? caso.forma_de_atencion : 'encomienda'"
+                                    x-model="caso.forma_de_atencion"
                                     class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
                                     <option value="encomienda">Encomienda</option>
                                     <option value="presencial">Presencial</option>
@@ -142,7 +141,7 @@
                         <div class="grid grid-cols-3 gap-4 items-center">
                             <label class="text-sm text-gray-700 dark:text-gray-300">Estatus</label>
                             <div class="col-span-2">
-                                <select name="estatus" x-bind:value="caso ? caso.estatus : 'asignado'"
+                                <select name="estatus" x-model="caso.estatus"
                                     class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10">
                                     <option value="asignado">Asignado</option>
                                     <option value="espera">Espera</option>
@@ -186,7 +185,7 @@
                                     <template x-for="doc in caso.documentacion" :key="doc.id">
                                         <tr>
                                             <td class="px-4 py-2 text-[11px] text-gray-700 dark:text-gray-300"
-                                                x-text="doc.pieza_soporte.nombre"></td>
+                                                x-text="doc.pieza_soporte ? doc.pieza_soporte.nombre : 'N/A'"></td>
                                             <td class="px-4 py-2 text-[11px] text-center text-gray-700 dark:text-gray-300 font-bold"
                                                 x-text="doc.cantidad"></td>
                                             <td class="px-4 py-2 text-[11px] text-gray-700 dark:text-gray-300 italic truncate max-w-[150px]"
@@ -206,7 +205,7 @@
                 class="bg-gray-50 dark:bg-gray-700 px-6 py-6 flex justify-center gap-4 border-t border-gray-200 dark:border-gray-600">
                 <x-button type="submit"
                     class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 px-8"
-                    ::disabled="!caso">
+                    ::disabled="!caso.id">
                     {{ __('Guardar') }}
                 </x-button>
                 <x-secondary-button class="px-8" @click="showRegistrarCasoModal = false">

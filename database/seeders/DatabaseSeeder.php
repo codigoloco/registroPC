@@ -22,6 +22,15 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'System',
             'email' => 'test@test.com',
             'password' => '123456789',            
+            'id_rol' => 1, // Administrador
+        ]);
+
+        User::factory()->create([
+            'name' => 'Tecnico',
+            'lastname' => 'De Soporte',
+            'email' => 'tecnico@test.com',
+            'password' => '123456789',            
+            'id_rol' => 2, // Soporte
         ]);
 
         // Llamar al seeder de piezas de soporte

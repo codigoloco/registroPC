@@ -1,38 +1,11 @@
+@once
+    @push('scripts')
+        @vite('resources/js/consultarRecepcion.js')
+    @endpush
+@endonce
+
 <div x-show="showConsultarModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0"
-    x-data="{
-        idCasoSearch: '',
-        recepcion: {
-            id_equipo: '',
-            tipo_atencion: 'presupuesto',
-            pago: '',
-            falla_tecnica: '',
-            deposito: 'Tecnico',
-            fecha_recepcion: '-',
-            fecha_salida: '-'
-        },
-        loading: false,
-        error: '',
-        buscarPorCaso() {
-            if (!this.idCasoSearch) return;
-            this.loading = true;
-            this.error = '';
-            fetch(`/recepcion/search/${this.idCasoSearch}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        this.error = data.error;
-                        this.recepcion = { id_equipo: '', tipo_atencion: 'presupuesto', pago: '', falla_tecnica: '', deposito: 'Tecnico', fecha_recepcion: '-', fecha_salida: '-' };
-                    } else {
-                        this.recepcion = data;
-                    }
-                })
-                .catch(err => {
-                    this.error = 'Error al consultar';
-                    console.error(err);
-                })
-                .finally(() => this.loading = false);
-        }
-    }">
+    x-data="consultarRecepcion()">
 
     <!-- Fondo Oscuro -->
     <div x-show="showConsultarModal" class="fixed inset-0 transform transition-all"
@@ -66,14 +39,38 @@
             @csrf
             <input type="hidden" name="id_caso" :value="idCasoSearch">
             <div class="p-8 space-y-8">
-                <!-- Buscador -->
+                <!-- Buscador de Caso -->
                 <div class="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-xl border border-blue-200 dark:border-blue-900">
-                    <div class="max-w-md mx-auto">
-                        <x-label value="Buscar por ID Caso"
+                    <div class="max-w-md mx-auto relative">
+                        <x-label value="Buscar Caso (ID o Nombre Cliente)"
                             class="mb-2 text-center font-bold text-blue-600 dark:text-blue-400" />
                         <div class="flex gap-2">
-                            <x-input type="text" placeholder="Ej: 1" class="w-full" x-model="idCasoSearch"
-                                x-imask="'number'" @keyup.enter="buscarPorCaso()" />
+                            <div class="flex-grow relative">
+                                <x-input 
+                                    type="text" 
+                                    placeholder="Escriba para buscar..." 
+                                    class="w-full" 
+                                    x-model="searchCasoInput"
+                                    @focus="showCasosList = true"
+                                    @click.away="showCasosList = false"
+                                    @keyup.enter="buscarPorCaso()"
+                                    autocomplete="off"
+                                />
+                                
+                                <div x-show="showCasosList && filteredCasos.length > 0" 
+                                     class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                    <template x-for="caso in filteredCasos" :key="caso.id">
+                                        <div @click="selectCasoParaBusqueda(caso)" 
+                                             class="px-4 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors">
+                                            <div class="flex justify-between items-center text-sm">
+                                                <span class="font-bold text-blue-600 dark:text-blue-400" x-text="'#' + caso.id"></span>
+                                                <span class="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 capitalize" x-text="caso.estatus"></span>
+                                            </div>
+                                            <div class="text-xs text-gray-700 dark:text-gray-300 font-medium" x-text="caso.cliente.nombre + ' ' + (caso.cliente.apellido || '')"></div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
                             <x-button type="button" @click="buscarPorCaso()"
                                 class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800">
                                 <span x-show="!loading">
@@ -82,7 +79,7 @@
                                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                 </span>
-                                <span x-show="loading" class="text-xs">Buscando...</span>
+                                <span x-show="loading" class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
                             </x-button>
                         </div>
                         <template x-if="error">
@@ -105,9 +102,34 @@
 
                         <div class="grid grid-cols-1 gap-4">
                             <div>
-                                <x-label value="ID Equipo" />
-                                <x-input type="text" name="id_equipo" class="w-full h-9" x-model="recepcion.id_equipo"
-                                    x-imask="'number'" required />
+                                <x-label value="ID Equipo" class="mb-1" />
+                                <div class="relative">
+                                    <x-input 
+                                        type="text" 
+                                        x-model="searchEquipo" 
+                                        @focus="showEquiposList = true"
+                                        @click.away="showEquiposList = false"
+                                        placeholder="Serial, Modelo o Tipo..." 
+                                        class="w-full h-9" 
+                                        autocomplete="off"
+                                        required
+                                    />
+                                    <input type="hidden" name="id_equipo" :value="recepcion.id_equipo">
+                                    
+                                    <div x-show="showEquiposList && filteredEquipos.length > 0" 
+                                         class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                        <template x-for="equipo in filteredEquipos" :key="equipo.id">
+                                            <div @click="selectEquipo(equipo)" 
+                                                 class="px-4 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors">
+                                                <div class="flex justify-between items-center text-sm">
+                                                    <span class="font-bold text-blue-600 dark:text-blue-400" x-text="equipo.tipo.nombre + ' ' + equipo.modelo.nombre"></span>
+                                                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-mono" x-text="equipo.serial_equipo"></span>
+                                                </div>
+                                                <div class="text-[10px] text-gray-500" x-text="'ID: ' + equipo.id"></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>

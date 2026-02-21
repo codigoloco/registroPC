@@ -6,6 +6,7 @@ use App\Models\Auditoria;
 use App\Models\Caso;
 use App\Models\DocumentacionCaso;
 use App\Models\PiezaSoporte;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -157,11 +158,71 @@ class CasoController extends Controller
         return response()->json($caso);
     }
 
-    /**
-     * Obtiene todas las piezas registradas para el select del modal.
-     */
     public function getPiezas()
     {
         return response()->json(PiezaSoporte::all());
+    }
+
+    /**
+     * Obtiene los casos disponibles (aquellos que no están entregados) 
+     * para el select del proceso de recepción.
+     */
+    public function getCasosDisponibles()
+    {
+        return response()->json(
+            Caso::with('cliente')
+                ->where('estatus', '!=', 'entregado')
+                ->orderBy('id', 'desc')
+                ->get()
+        );
+    }
+
+    /**
+     * Obtiene los usuarios con el rol 'soporte' para la asignación de casos.
+     */
+    public function getTecnicos()
+    {
+        return response()->json(
+            User::whereHas('rol', function($q) {
+                $q->where('nombre', 'soporte');
+            })
+            ->where('id_estatus', 1) // Asumiendo 1 es activo
+            ->get()
+        );
+    }
+
+    /**
+     * Asigna un técnico a un caso específico.
+     */
+    public function asignarTecnico(Request $request)
+    {
+        $request->validate([
+            'id_caso' => 'required|exists:casos,id',
+            'id_usuario' => 'required|exists:users,id',
+        ]);
+
+        try {
+            $caso = Caso::findOrFail($request->id_caso);
+            $estadoInicial = $caso->toArray();
+
+            $caso->update([
+                'id_usuario' => $request->id_usuario,
+                'estatus' => 'asignado'
+            ]);
+
+            // Guardar auditoria
+            Auditoria::create([
+                'id_usuario' => Auth::id(),
+                'id_caso' => $caso->id,
+                'sentencia' => 'ASIGNAR_TECNICO',
+                'estado_inicial' => json_encode($estadoInicial),
+                'estado_final' => json_encode($caso->fresh()->toArray()),
+                'ip' => $request->ip(),
+            ]);
+
+            return redirect()->back()->with('success', "Técnico asignado exitosamente al Caso #{$caso->id}.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al asignar técnico: ' . $e->getMessage());
+        }
     }
 }

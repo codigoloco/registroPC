@@ -1,3 +1,9 @@
+@once
+    @push('scripts')
+        @vite('resources/js/gestionAuditoria.js')
+    @endpush
+@endonce
+
 <div x-show="showAuditoriaModal" 
     x-data="gestionAuditoria"
     style="display: none;" 

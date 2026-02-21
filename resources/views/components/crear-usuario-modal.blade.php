@@ -1,3 +1,4 @@
+@props(['roles'])
 <div x-show="showCrearModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0">
 
     <!-- Fondo Oscuro -->
@@ -84,14 +85,13 @@
                     <div class="space-y-4">
                         <div>
                             <x-label value="Rol / Permiso" class="mb-2 font-bold" />
-                            <select name="role"
+                            <select name="id_rol"
                                 class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm h-10"
                                 required>
                                 <option value="">{{ __('Seleccione un rol...') }}</option>
-                                <option value="Recepcionista">Recepcionista</option>
-                                <option value="Soporte">Soporte</option>
-                                <option value="Supervisor">Supervisor</option>
-                                <option value="Administrador">Administrador</option>
+                                @foreach($roles as $rol)
+                                    <option value="{{ $rol->id }}">{{ ucfirst($rol->nombre) }}</option>
+                                @endforeach
                             </select>
                         </div>
 

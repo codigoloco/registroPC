@@ -29,11 +29,11 @@
 
     {{-- Action Buttons --}}
     <div class="flex flex-wrap gap-4 pt-4 border-t border-gray-100">
-        <x-button onclick="generarReporte('grafica')" class="bg-blue-800 hover:bg-blue-700 active:bg-blue-900 border-none">
-            Generar Gráfica
+        <x-button onclick="generarReporte('grafica')" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-none shadow-sm">
+            {{ __('Generar Gráfica') }}
         </x-button>
-        <x-secondary-button onclick="generarReporte('estadistica')">
-            Generar Estadística
+        <x-secondary-button onclick="generarReporte('estadistica')" class="border-blue-200 text-blue-700 hover:bg-blue-50">
+            {{ __('Generar Estadística') }}
         </x-secondary-button>
     </div>
 </div>

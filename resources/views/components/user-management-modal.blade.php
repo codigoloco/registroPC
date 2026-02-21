@@ -1,3 +1,4 @@
+@props(['roles', 'users'])
 <div x-show="showModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0">
 
     <!-- Fondo Oscuro (Backdrop) -->
@@ -17,11 +18,27 @@
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-data="{
             searchEmail: '',
+            showEmailList: false,
+            allUsers: {{ Js::from($users->map(fn($u) => ['email' => $u->email, 'name' => $u->name, 'lastname' => $u->lastname])) }},
+            get filteredEmails() {
+                if (!this.searchEmail) return this.allUsers;
+                const search = this.searchEmail.toLowerCase();
+                return this.allUsers.filter(u =>
+                    u.email.toLowerCase().includes(search) ||
+                    u.name.toLowerCase().includes(search) ||
+                    (u.lastname && u.lastname.toLowerCase().includes(search))
+                );
+            },
+            selectEmail(userItem) {
+                this.searchEmail = userItem.email;
+                this.showEmailList = false;
+                this.buscarUsuario();
+            },
             user: {
                 name: '',
                 lastname: '',
                 email: '',
-                role: '',
+                id_rol: '',
                 id_estatus: ''
             },
             loading: false,
@@ -35,7 +52,7 @@
                     .then(data => {
                         if (data.error) {
                             this.error = data.error;
-                            this.user = { name: '', lastname: '', email: '', role: '', id_estatus: '' };
+                            this.user = { name: '', lastname: '', email: '', id_rol: '', id_estatus: '' };
                         } else {
                             this.user = data;
                         }
@@ -64,7 +81,7 @@
             @csrf
             <input type="hidden" name="email" :value="user.email">
             <div class="p-8 space-y-8">
-                <x-user-management-form />
+                <x-user-management-form :roles="$roles" />
             </div>
 
             <!-- Footer de Acciones -->

@@ -1,3 +1,9 @@
+@once
+    @push('scripts')
+        @vite('resources/js/gestionCasos/crearCaso.js')
+    @endpush
+@endonce
+
 <div x-show="showCrearCasoModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0">
 
     <!-- Fondo Oscuro (Backdrop) -->
@@ -67,7 +73,7 @@
                         <p x-show="error"
                             class="text-sm text-red-600 font-bold text-center bg-red-100 dark:bg-red-900/30 p-2 rounded"
                             x-text="error"></p>
-                        <p x-show="cliente"
+                        <p x-show="clientFound"
                             class="text-sm text-green-700 font-bold text-center bg-green-100 dark:bg-green-900/30 p-2 rounded"
                             x-text="'✓ Cliente: ' + cliente.nombre + ' ' + (cliente.apellido || '')"></p>
 
@@ -124,7 +130,7 @@
                 class="bg-gray-50 dark:bg-gray-700 px-6 py-6 flex justify-center gap-4 border-t border-gray-200 dark:border-gray-600">
                 <x-button type="submit"
                     class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 px-8"
-                    ::disabled="!cliente">
+                    ::disabled="!clientFound">
                     {{ __('Guardar') }}
                 </x-button>
                 <x-secondary-button class="px-8" @click="showCrearCasoModal = false">

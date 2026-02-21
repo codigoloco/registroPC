@@ -112,4 +112,16 @@ class EquipoController extends Controller
             'nombre_modelo' => $equipo->modelo->nombre ?? '',
         ]);
     }
+
+    /**
+     * Obtiene todos los equipos para el select de recepción.
+     */
+    public function getAllEquipos()
+    {
+        return response()->json(
+            Equipo::with(['tipo', 'modelo'])
+                ->orderBy('id', 'desc')
+                ->get()
+        );
+    }
 }

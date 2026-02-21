@@ -30,7 +30,7 @@ class User extends Authenticatable
         'lastname',
         'email',
         'password',
-        'role',
+        'id_rol',
         'id_estatus',
     ];
 
@@ -54,6 +54,22 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    /**
+     * Obtiene el rol asociado al usuario.
+     */
+    public function rol()
+    {
+        return $this->belongsTo(Role::class, 'id_rol');
+    }
+
+    /**
+     * Obtiene los casos asignados al usuario.
+     */
+    public function casos()
+    {
+        return $this->hasMany(Caso::class, 'id_usuario');
+    }
 
     /**
      * Get the attributes that should be cast.

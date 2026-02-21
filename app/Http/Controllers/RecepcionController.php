@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\RecepcionDeEquipo;
 use App\Models\EntregaDeEquipo;
 use App\Models\Equipo;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -59,22 +60,50 @@ class RecepcionController extends Controller
 
         $caso = Caso::findOrFail($request->id_caso);
 
+        // Buscar técnico de soporte disponible con menos carga (casos no entregados)
+        $tecnico = User::whereHas('rol', function($q) {
+                $q->where('nombre', 'soporte');
+            })
+            ->where('id_estatus', 1) // Activo
+            ->withCount(['casos' => function($q) {
+                $q->where('estatus', '!=', 'entregado');
+            }])
+            ->orderBy('casos_count', 'asc')
+            ->first();
+
+        if (!$tecnico) {
+            return redirect()->back()->with('error', 'Recepción fallida: No hay técnicos de soporte disponibles (activos) en el sistema.');
+        }
+
+        // Actualizar caso con el técnico asignado y cambiar estatus a 'asignado'
+        $estadoInicialCaso = $caso->toArray();
+        $caso->update([
+            'id_usuario' => $tecnico->id,
+            'estatus' => 'asignado'
+        ]);
+
         $data = $request->all();
         $data['id_usuario_recepcion'] = Auth::id();
-        $data['id_usuario_tecnico_asignado'] = $caso->id_usuario;
+        $data['id_usuario_tecnico_asignado'] = $tecnico->id;
 
         RecepcionDeEquipo::create($data);
 
-        // Guardar auditoria
+        // Guardar auditoria de la recepción y la asignación
         Auditoria::create([
             'id_usuario' => Auth::id(),
             'id_caso' => $caso->id,
-            'sentencia' => 'INSERT_RECEPCION',
-            'estado_final' => json_encode(['nota' => 'Recepción de equipo registrada.', 'datos' => $data]),
+            'sentencia' => 'INSERT_RECEPCION_AUTO_ASIGNACION',
+            'estado_inicial' => json_encode(['caso_anterior' => $estadoInicialCaso]),
+            'estado_final' => json_encode([
+                'nota' => 'Recepción registrada y técnico asignado automáticamente.',
+                'tecnico_id' => $tecnico->id,
+                'tecnico_nombre' => $tecnico->name . ' ' . $tecnico->lastname,
+                'datos_recepcion' => $data
+            ]),
             'ip' => $request->ip(),
         ]);
 
-        return redirect()->back()->with('success', 'Recepción de equipo registrada exitosamente.');
+        return redirect()->back()->with('success', "Recepción registrada. Equipo asignado automáticamente al técnico: {$tecnico->name} {$tecnico->lastname}.");
     }
 
     public function registrarSalida(Request $request)

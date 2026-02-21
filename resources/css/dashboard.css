@@ -1,110 +1,118 @@
 :root {
-    --primary-blue: #1e40af; /* Deep Blue */
-    --secondary-blue: #3b82f6; /* Brighter Blue */
-    --light-blue: #dbeafe;
-    --text-dark: #1f2937;
-    --text-gray: #6b7280;
-    --bg-card: #ffffff;
-    --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    --radius-lg: 1rem;
-    --radius-md: 0.5rem;
+    --primary-blue: #1e40af; /* Deep Blue 700 */
+    --hover-blue: #1d4ed8;  /* Blue 600 */
+    --accent-blue: #3b82f6; /* Blue 500 */
+    --bg-main: #f3f4f6;
+    --text-main: #111827;
+    --shadow-premium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --border-glass: rgba(255, 255, 255, 0.3);
 }
 
 .dashboard-card {
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-soft);
+    background: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-premium);
     overflow: hidden;
-    font-family: 'Inter', sans-serif;
+    border: 1px solid #e5e7eb;
 }
 
 .dashboard-header {
-    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    background: #1e40af; /* Sólido como en los modales */
     color: white;
-    padding: 1.5rem 2rem;
-    text-align: center;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .dashboard-header h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
 .dashboard-header p {
-    font-size: 0.95rem;
-    opacity: 0.9;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.875rem;
+    opacity: 0.8;
 }
 
 .section-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin-bottom: 1rem;
-    border-left: 4px solid var(--secondary-blue);
-    padding-left: 0.75rem;
-}
-
-.control-group {
-    margin-bottom: 1.5rem;
-}
-
-.checkbox-group {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e40af;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
 }
 
-.chart-container {
-    background: #f8fafc;
-    border-radius: var(--radius-lg);
-    padding: 1rem;
-    height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+.section-title::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 1.25rem;
+    background: #3b82f6;
+    border-radius: 2px;
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+}
+
+/* Gráficas y tablas contenedores */
+#chartContainer, #tableContainer {
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
 }
 
 .stats-table {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
 }
 
-.stats-table th {
-    text-align: left;
+.stats-table thead th {
+    background: #f8fafc;
+    color: #1e40af;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
     padding: 0.75rem 1rem;
-    background: #f1f5f9;
-    color: var(--text-gray);
-    font-weight: 600;
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 2px solid #e5e7eb;
 }
 
-.stats-table td {
-    padding: 0.75rem 1rem;
-    color: var(--text-dark);
-    border-bottom: 1px solid #f1f5f9;
+.stats-table tbody td {
+    padding: 1rem;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
 }
 
-.stats-table tr:last-child td {
-    border-bottom: none;
+.stats-table tbody tr:hover {
+    background-color: #f9fafb;
 }
 
-.glass-panel {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+.chart-container {
+    padding: 1.5rem;
 }
 
-/* Responsive adjustment */
-@media (max-width: 768px) {
-    .dashboard-header {
-        padding: 1rem;
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .dashboard-card {
+        background: #1f2937;
+        border-color: #374151;
     }
-    .dashboard-header h2 {
-        font-size: 1.25rem;
+    .section-title {
+        color: #60a5fa;
+    }
+    .stats-table thead th {
+        background: #111827;
+        color: #60a5fa;
+        border-color: #374151;
+    }
+    .stats-table tbody td {
+        color: #d1d5db;
+        border-color: #374151;
+    }
+    .stats-table tbody tr:hover {
+        background-color: #111827;
     }
 }

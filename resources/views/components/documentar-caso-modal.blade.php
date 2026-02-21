@@ -1,4 +1,10 @@
-<div x-show="showDocumentarModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0">
+@once
+    @push('scripts')
+        @vite('resources/js/documentarCaso.js')
+    @endpush
+@endonce
+
+<div x-show="showDocumentarModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0" x-data="documentarCaso()">
 
     <!-- Fondo Oscuro (Backdrop) -->
     <div x-show="showDocumentarModal" class="fixed inset-0 transform transition-all"
@@ -16,39 +22,7 @@
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-data="{
-            searchId: '',
-            caso: null,
-            piezas: [],
-            loading: false,
-            error: '',
-            entries: [{ piece: '', qty: 1 }],
-            init() {
-                fetch('/piezas')
-                    .then(response => response.json())
-                    .then(data => this.piezas = data);
-            },
-            buscarCaso() {
-                if (!this.searchId) return;
-                this.loading = true;
-                this.error = '';
-                fetch(`/casos/search/${this.searchId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            this.error = 'Caso no encontrado.';
-                            this.caso = null;
-                        } else {
-                            this.caso = data;
-                        }
-                    })
-                    .catch(err => {
-                        this.error = 'Error en la búsqueda';
-                        this.caso = null;
-                    })
-                    .finally(() => this.loading = false);
-            }
-        }">
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
 
         <!-- Encabezado -->
         <div class="bg-blue-600 text-white px-6 py-4 flex items-center justify-between shadow-sm">
@@ -78,7 +52,7 @@
                         </button>
                     </div>
                     <p x-show="error" class="text-xs text-red-500 mt-2" x-text="error"></p>
-                    <div x-show="caso" class="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm space-y-1">
+                    <div x-show="caso.id" class="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm space-y-1">
                         <p class="font-bold text-blue-600">Cliente: <span
                                 class="font-normal text-gray-700 dark:text-gray-300"
                                 x-text="caso.cliente.nombre + ' ' + (caso.cliente.apellido || '')"></span></p>
@@ -154,7 +128,7 @@
                 class="bg-gray-50 dark:bg-gray-700 px-6 py-6 flex justify-center gap-4 border-t border-gray-200 dark:border-gray-600">
                 <x-button type="submit"
                     class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 px-10"
-                    ::disabled="!caso">
+                    ::disabled="!caso.id">
                     {{ __('Guardar Cambios') }}
                 </x-button>
                 <x-secondary-button class="px-10" @click="showDocumentarModal = false">

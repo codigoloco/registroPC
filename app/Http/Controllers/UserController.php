@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Auditoria;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +17,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('id', 'desc')->paginate(10);
-        return view('gestion-usuarios', compact('users'));
+        $users = User::with('rol')->orderBy('id', 'desc')->paginate(10);
+        $roles = Role::all();
+        return view('gestion-usuarios', compact('users', 'roles'));
     }
 
     /**
@@ -30,7 +32,7 @@ class UserController extends Controller
             'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string'],
+            'id_rol' => ['required', 'integer', 'exists:roles,id'],
             'id_estatus' => ['required', 'integer'],
         ]);
 
@@ -39,7 +41,7 @@ class UserController extends Controller
             'lastname' => $request->lastname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'id_rol' => $request->id_rol,
             'id_estatus' => $request->id_estatus,
         ]);
 
@@ -68,7 +70,7 @@ class UserController extends Controller
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
-            'role' => ['required', 'string'],
+            'id_rol' => ['required', 'integer', 'exists:roles,id'],
             'id_estatus' => ['required', 'integer'],
         ];
 
@@ -81,7 +83,7 @@ class UserController extends Controller
         $data = [
             'name' => $request->name,
             'lastname' => $request->lastname,
-            'role' => $request->role,
+            'id_rol' => $request->id_rol,
             'id_estatus' => $request->id_estatus,
         ];
 
@@ -125,7 +127,7 @@ class UserController extends Controller
             'name' => $user->name,
             'lastname' => $user->lastname,
             'email' => $user->email,
-            'role' => $user->role,
+            'id_rol' => $user->id_rol,
             'id_estatus' => $user->id_estatus,
         ]);
     }

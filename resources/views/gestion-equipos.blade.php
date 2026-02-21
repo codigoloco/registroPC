@@ -84,76 +84,47 @@
             </div>
 
             <!-- Tabla de Equipos Registrados -->
-            <div
-                class="mt-12 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg border border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 17v-2a2 2 0 00-2-2H5a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2zm0 0h2a2 2 0 002-2v-4a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 002 2h2m-6-12l-2 2L9 3" />
-                            </svg>
-                            {{ __('Equipos Registrados') }}
-                        </h3>
-                    </div>
-
-                    <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-blue-600 text-white">
-                                <tr>
-                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
-                                        {{ __('ID') }}</th>
-                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
-                                        {{ __('Serial') }}</th>
-                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
-                                        {{ __('Tipo') }}</th>
-                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
-                                        {{ __('Modelo') }}</th>
-                                    <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
-                                        {{ __('Fecha Registro') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                @forelse ($equipos as $equipo)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">
-                                            {{ $equipo->id }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-                                            <span
-                                                class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-md font-mono">
-                                                {{ $equipo->serial_equipo }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-                                            {{ $equipo->tipo->nombre ?? 'N/A' }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-                                            {{ $equipo->modelo->nombre ?? 'N/A' }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                            {{ $equipo->created_at->format('d/m/Y') }}
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5"
-                                            class="px-6 py-10 text-center text-gray-500 dark:text-gray-400 italic">
-                                            {{ __('No hay equipos registrados actualmente.') }}
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Paginación -->
-                    <div class="mt-6">
-                        {{ $equipos->links() }}
-                    </div>
-                </div>
-            </div>
+            <x-data-table
+                title="Equipos Registrados"
+                :headers="[
+                    ['label' => 'ID'],
+                    ['label' => 'Serial'],
+                    ['label' => 'Tipo'],
+                    ['label' => 'Modelo'],
+                    ['label' => 'Fecha Registro'],
+                ]"
+                :paginator="$equipos"
+                search-placeholder="Buscar equipos..."
+                empty-message="No hay equipos registrados actualmente."
+            >
+                <x-slot:icon>
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17v-2a2 2 0 00-2-2H5a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2zm0 0h2a2 2 0 002-2v-4a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 002 2h2m-6-12l-2 2L9 3" />
+                    </svg>
+                </x-slot:icon>
+                @foreach ($equipos as $equipo)
+                    <tr data-searchable class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">
+                            {{ $equipo->id }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-md font-mono">
+                                {{ $equipo->serial_equipo }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                            {{ $equipo->tipo->nombre ?? 'N/A' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                            {{ $equipo->modelo->nombre ?? 'N/A' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {{ $equipo->created_at->format('d/m/Y') }}
+                        </td>
+                    </tr>
+                @endforeach
+            </x-data-table>
 
             <!-- Modal Component: Recepción -->
             <x-registrar-recepcion-equipo-modal />

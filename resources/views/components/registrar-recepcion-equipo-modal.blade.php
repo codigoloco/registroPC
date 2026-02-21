@@ -1,21 +1,11 @@
+@once
+    @push('scripts')
+        @vite('resources/js/recepcionEquipo.js')
+    @endpush
+@endonce
+
 <div x-show="showRecepcionModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0"
-    x-data="{ 
-        showHistorial: false, 
-        historial: [], 
-        pagination: {}, 
-        loading: false,
-        fetchHistorial(url = '/recepcion/all') {
-            this.loading = true;
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    this.historial = data.data;
-                    this.pagination = data;
-                    this.showHistorial = true;
-                })
-                .finally(() => this.loading = false);
-        }
-    }">
+    x-data="recepcionEquipo()">
 
     <!-- Fondo Oscuro (Backdrop) -->
     <div x-show="showRecepcionModal" class="fixed inset-0 transform transition-all"
@@ -68,11 +58,63 @@
                         <div class="space-y-4">
                             <div>
                                 <x-label value="ID Caso" class="mb-1" />
-                                <x-input type="text" name="id_caso" placeholder="ID Caso" class="w-full" x-imask="'number'" required />
+                                <div class="relative">
+                                    <x-input 
+                                        type="text" 
+                                        x-model="searchCaso" 
+                                        @focus="showCasosList = true"
+                                        @click.away="showCasosList = false"
+                                        placeholder="Escriba ID o Nombre Cliente..." 
+                                        class="w-full" 
+                                        autocomplete="off"
+                                        required
+                                    />
+                                    <input type="hidden" name="id_caso" :value="selectedCasoId">
+                                    
+                                    <div x-show="showCasosList && filteredCasos.length > 0" 
+                                         class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                                        <template x-for="caso in filteredCasos" :key="caso.id">
+                                            <div @click="selectCaso(caso)" 
+                                                 class="px-4 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors">
+                                                <div class="flex justify-between items-center text-sm">
+                                                    <span class="font-bold text-blue-600 dark:text-blue-400" x-text="'#' + caso.id"></span>
+                                                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 capitalize" x-text="caso.estatus"></span>
+                                                </div>
+                                                <div class="text-xs text-gray-700 dark:text-gray-300 font-medium" x-text="caso.cliente.nombre + ' ' + (caso.cliente.apellido || '')"></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <x-label value="ID Equipo" class="mb-1" />
-                                <x-input type="text" name="id_equipo" placeholder="ID Equipo" class="w-full" x-imask="'number'" required />
+                                <div class="relative">
+                                    <x-input 
+                                        type="text" 
+                                        x-model="searchEquipo" 
+                                        @focus="showEquiposList = true"
+                                        @click.away="showEquiposList = false"
+                                        placeholder="Serial, Modelo o Tipo..." 
+                                        class="w-full" 
+                                        autocomplete="off"
+                                        required
+                                    />
+                                    <input type="hidden" name="id_equipo" :value="selectedEquipoId">
+                                    
+                                    <div x-show="showEquiposList && filteredEquipos.length > 0" 
+                                         class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                                        <template x-for="equipo in filteredEquipos" :key="equipo.id">
+                                            <div @click="selectEquipo(equipo)" 
+                                                 class="px-4 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors">
+                                                <div class="flex justify-between items-center text-sm">
+                                                    <span class="font-bold text-blue-600 dark:text-blue-400" x-text="equipo.tipo.nombre + ' ' + equipo.modelo.nombre"></span>
+                                                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-mono" x-text="equipo.serial_equipo"></span>
+                                                </div>
+                                                <div class="text-[10px] text-gray-500" x-text="'ID: ' + equipo.id"></div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
