@@ -17,6 +17,8 @@ class ReporteController extends Controller
 
     public function __construct()
     {
+        // prevent soporte users from accessing any report pages; others may view
+        // the UI but data generation is controlled in getData/pdf.
         $this->middleware(function ($request, $next) {
             $user = Auth::user();
             if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
@@ -28,6 +30,13 @@ class ReporteController extends Controller
 
     public function getData(Request $request)
     {
+        // sólo supervisor genera estadísticas reales; administradores pueden
+        // ver la página pero no pedir los valores.
+        $user = Auth::user();
+        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'supervisor') {
+            abort(403);
+        }
+
         $tipoReporte = $request->input('tipoReporte');
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
@@ -136,8 +145,12 @@ class ReporteController extends Controller
          */
         public function pdf(Request $request)
         {
-            $tipoReporte = $request->input('tipoReporte', 'recibidos_atencion');
-            $fechaInicio = $request->input('fechaInicio');
+        // same restriction as getData
+        $user = Auth::user();
+        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'supervisor') {
+            abort(403);
+        }
+
             $fechaFin = $request->input('fechaFin');
 
             $data = $this->buildReportData($tipoReporte, $fechaInicio, $fechaFin);

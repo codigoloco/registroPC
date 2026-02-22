@@ -84,6 +84,11 @@ class RecepcionController extends Controller
      */
     public function saveRecepcion(Request $request)
     {
+        // sólo recepcionista puede registrar la recepción
+        $user = Auth::user();
+        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
+            abort(403);
+        }
         $request->validate([
             'id_caso' => 'required|integer|exists:casos,id',
             'id_equipo' => 'required|integer|exists:equipos,id',
@@ -142,6 +147,11 @@ class RecepcionController extends Controller
 
     public function registrarSalida(Request $request)
     {
+        // sólo recepcionista puede registrar salidas
+        $user = Auth::user();
+        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
+            abort(403);
+        }
         $request->validate([
             'id_caso' => 'required|integer|exists:recepcion_de_equipo,id_caso',
             'deposito' => 'required|in:Tecnico,Deposito',
@@ -173,6 +183,11 @@ class RecepcionController extends Controller
      */
     public function updateRecepcion(Request $request)
     {
+        // sólo recepcionista puede modificar recepciones
+        $user = Auth::user();
+        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
+            abort(403);
+        }
         $request->validate([
             'id_caso' => 'required|integer|exists:recepcion_de_equipo,id_caso',
             'id_equipo' => 'required|integer|exists:equipos,id',

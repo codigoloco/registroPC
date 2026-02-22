@@ -21,14 +21,14 @@
         <!-- Encabezado -->
         <div class="bg-blue-600 text-white px-6 py-4 flex items-center shadow-sm justify-between">
             <span class="text-lg font-semibold">{{ __('Crear Nuevo Usuario') }}</span>
-            <button @click="showCrearModal = false" class="text-white hover:text-gray-200 focus:outline-none">
+            <button @click="showCrearModal = false; window.resetCrearUsuarioForm && window.resetCrearUsuarioForm()" class="text-white hover:text-gray-200 focus:outline-none">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
-        <form action="{{ route('users.save') }}" method="POST">
+        <form id="crearUsuarioForm" action="{{ route('users.save') }}" method="POST">
             @csrf
             <div class="p-8 space-y-8">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -50,7 +50,8 @@
                         <div x-data="{ show: false }">
                             <x-label value="Contraseña" class="mb-1" />
                             <div class="relative">
-                                <x-input ::type="show ? 'text' : 'password'" name="password" placeholder="********" class="w-full pr-10" required />
+                                <x-input ::type="show ? 'text' : 'password'" name="password" placeholder="********" class="w-full pr-10" required x-imask="{mask:/^.*$/}" />
+                                <span id="crearPwdMsg" class="text-red-500 text-xs absolute top-0 right-0 mt-2 mr-10" style="display:none;">Mínimo 8 caracteres</span>
                                 <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                                     <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -61,12 +62,12 @@
                                     </svg>
                                 </button>
                             </div>
-                            <p class="text-xs text-gray-500 mt-1">{{ __('La contraseña debe tener al menos 8 caracteres.') }}</p>
                         </div>
                         <div x-data="{ show: false }">
                             <x-label value="Confirmar Contraseña" class="mb-1" />
                             <div class="relative">
-                                <x-input ::type="show ? 'text' : 'password'" name="password_confirmation" placeholder="********" class="w-full pr-10" required />
+                                <x-input ::type="show ? 'text' : 'password'" name="password_confirmation" placeholder="********" class="w-full pr-10" required x-imask="{mask:/^.*$/}" />
+                                <span id="crearConfirmMsg" class="text-red-500 text-xs absolute top-0 right-0 mt-2 mr-10" style="display:none;">Mínimo 8 caracteres</span>
                                 <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                                     <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -77,7 +78,6 @@
                                     </svg>
                                 </button>
                             </div>
-                            <p class="text-xs text-gray-500 mt-1">{{ __('La contraseña debe tener al menos 8 caracteres.') }}</p>
                         </div>
                     </div>
 
@@ -117,11 +117,13 @@
                     class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 px-10">
                     {{ __('Crear Usuario') }}
                 </x-button>
-                <x-secondary-button class="px-10" @click="showCrearModal = false">
+                <x-secondary-button class="px-10" @click="showCrearModal = false; window.resetCrearUsuarioForm && window.resetCrearUsuarioForm()">
                     {{ __('Cancelar') }}
                 </x-secondary-button>
             </div>
         </form>
+
+        {{-- JS logic for this form now lives in resources/js/crearUsuario.js and is imported via app.js --}}
 
     </div>
 </div>

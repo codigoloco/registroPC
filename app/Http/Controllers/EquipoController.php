@@ -25,6 +25,10 @@ class EquipoController extends Controller
      */
     public function saveEquipo(Request $request)
     {
+        $user = Auth::user();
+        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
+            abort(403);
+        }
         $request->validate([
             'nombre_tipo' => 'required|string|max:30',
             'nombre_modelo' => 'required|string|max:30',
@@ -61,6 +65,10 @@ class EquipoController extends Controller
      */
     public function updateEquipo(Request $request)
     {
+        $user = Auth::user();
+        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
+            abort(403);
+        }
         $request->validate([
             'id' => 'required|exists:equipos,id',
             'nombre_tipo' => 'required|string|max:30',

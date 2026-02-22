@@ -7,7 +7,8 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"
-            x-data="{ showModal: false, showCrearModal: false, showAuditoriaModal: false }">
+            x-data="{ showModal: false, showCrearModal: false, showAuditoriaModal: false }"
+            x-init="@if($errors->any()) showCrearModal = true; @endif">
 
             <!-- Mensajes de Estado (Éxito/Error) -->
             @if (session('success'))

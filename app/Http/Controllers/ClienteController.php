@@ -25,11 +25,12 @@ class ClienteController extends Controller
      */
     public function saveCliente(Request $request)
     {
-        // impedir que el personal de soporte registre nuevos clientes
+        // únicamente recepcionista puede crear clientes (admins/supervisor ven pero no crean).
         $user = Auth::user();
-        if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
+        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
             abort(403);
         }
+
         $request->validate([
             'cedula' => 'required|integer|unique:clientes,id',
             'nombre' => 'required|string|max:100',
@@ -89,11 +90,12 @@ class ClienteController extends Controller
      */
     public function updateCliente(Request $request)
     {
-        // opcional: también podemos bloquear la modificación por parte de soporte
+        // únicamente recepcionista puede modificar clientes.
         $user = Auth::user();
-        if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
+        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
             abort(403);
         }
+
         $request->validate([
             'cedula' => 'required|integer|exists:clientes,id',
             'nombre' => 'required|string|max:100',

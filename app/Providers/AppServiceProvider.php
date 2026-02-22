@@ -22,6 +22,13 @@ class AppServiceProvider extends ServiceProvider
         // aseguramos que la aplicación utilice el idioma configurado
         // (normalmente 'es' a partir de config/app.php y el .env)
         app()->setLocale(config('app.locale'));
+        // register our custom role-checking middleware so that we can
+        // apply it easily inside route groups via `->middleware('role:...')`.
+        // This approach is used instead of Kernel.php because the project
+        // uses the new `bootstrap/app.php` style where the Http kernel class
+        // is not present in the app directory.
+        \Illuminate\Support\Facades\Route::aliasMiddleware('role', \App\Http\Middleware\CheckRole::class);
+
         \Illuminate\Support\Facades\Event::listen(
             \Illuminate\Auth\Events\Login::class,
             function ($event) {

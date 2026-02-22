@@ -30,10 +30,17 @@ class UserController extends Controller
      */
     public function __construct()
     {
+        // bloqueamos aquí también, de forma más explícita, cualquier rol
+        // que no sea administrador o supervisor. (el middleware de rutas es
+        // la primera línea de defensa, pero esto evita que alguien llame a la
+        // acción desde otro contexto si pasa por alto las rutas.)
         $this->middleware(function ($request, $next) {
             $user = Auth::user();
-            if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
-                // podemos redirigir a inicio con mensaje o abortar 403
+            if (! $user || ! $user->rol) {
+                abort(403);
+            }
+            $rol = strtolower($user->rol->nombre);
+            if (! in_array($rol, ['administrador', 'supervisor'], true)) {
                 abort(403);
             }
             return $next($request);
@@ -45,6 +52,7 @@ class UserController extends Controller
      */
     public function saveUser(Request $request)
     {
+        // validation rules stay the same; role guard applied earlier
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],

@@ -62,7 +62,13 @@ document.addEventListener('alpine:init', () => {
         },
 
         showDetail(item) {
-            alert(`Detalle Auditoria #${item.id}\n\nAcción: ${item.sentencia}\nIP: ${item.ip}\n\nEstado Inicial: ${JSON.stringify(item.estado_inicial, null, 2)}\n\nEstado Final: ${JSON.stringify(item.estado_final, null, 2)}`);
+            Swal.fire({
+                title: `Detalle Auditoria #${item.id}`,
+                icon: 'info',
+                html: `<pre style="text-align:left;">Acción: ${item.sentencia}\nIP: ${item.ip}\n\nEstado Inicial: ${JSON.stringify(item.estado_inicial, null, 2)}\n\nEstado Final: ${JSON.stringify(item.estado_final, null, 2)}</pre>`,
+                width: 600,
+                confirmButtonText: 'Cerrar'
+            });
         }
     }));
 });

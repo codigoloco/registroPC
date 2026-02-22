@@ -44,7 +44,11 @@ async function generarReporte(tipoVisualizacion) {
 
     } catch (error) {
         console.error('Error fetching data:', error);
-        alert('Hubo un error al generar el reporte.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un error al generar el reporte.'
+        });
     }
 }
 

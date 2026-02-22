@@ -24,14 +24,15 @@
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4" x-data="{ lengthOk: true }">
                 <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" x-imask="/./" />
+                <span id="passwordLengthMsg" class="text-red-500 text-xs" style="display:none;">La contraseña debe tener al menos 8 caracteres.</span>
             </div>
 
             <div class="mt-4">
                 <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" x-imask="/./" />
             </div>
 
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
@@ -61,5 +62,64 @@
                 </x-button>
             </div>
         </form>
+
+        {{-- cliente-side password confirmation check --}}
+        <script type="module">
+            import IMask from 'imask';
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('form');
+                const pwdInput = document.getElementById('password');
+                const msg = document.getElementById('passwordLengthMsg');
+
+                function checkLength() {
+                    if (pwdInput.value.length < 8) {
+                        msg.style.display = 'block';
+                    } else {
+                        msg.style.display = 'none';
+                    }
+                }
+
+                if (pwdInput) {
+                    IMask(pwdInput, {
+                        mask: /./,
+                        lazy: true,
+                        placeholderChar: '\u2000',
+                        onAccept: checkLength
+                    });
+                    // clear error when typing
+                    pwdInput.addEventListener('input', () => {
+                        msg.style.display = 'none';
+                        msg.textContent = '';
+                    });
+                }
+
+                form.addEventListener('submit', function (e) {
+                    const pwd = pwdInput.value;
+                    const confirm = document.getElementById('password_confirmation').value;
+                    // reset message
+                    msg.style.display = 'none';
+                    msg.textContent = '';
+
+                    if (pwd.length < 8) {
+                        e.preventDefault();
+                        msg.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+                        msg.style.display = 'block';
+                        return;
+                    }
+
+                    if (pwd !== confirm) {
+                        e.preventDefault();
+                        msg.textContent = 'Las contraseñas no coinciden.';
+                        msg.style.display = 'block';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Las contraseñas no coinciden.'
+                        });
+                    }
+                });
+            });
+        </script>
     </x-authentication-card>
 </x-guest-layout>

@@ -35,8 +35,10 @@ return new class extends Migration {
         DB::table('roles')->insert([
             ['nombre' => 'administrador', 'descripcion' => 'Acceso total al sistema'],
             ['nombre' => 'soporte', 'descripcion' => 'Técnico encargado de reparación'],
-            ['nombre' => 'recepcion', 'descripcion' => 'Encargado de recibir y entregar equipos'],
+            ['nombre' => 'recepcionista', 'descripcion' => 'Encargado de recibir y entregar equipos'],
+            ['nombre' => 'supervisor', 'descripcion' => 'Supervisor general'],
         ]);
+
     
         Schema::create('users', function (Blueprint $table) {
             $table->id();

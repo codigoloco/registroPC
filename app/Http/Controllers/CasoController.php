@@ -24,9 +24,16 @@ class CasoController extends Controller
 
     /**
      * Guarda un nuevo caso.
+     *
+     * Sólo la recepcionista puede crear casos según la matriz de permisos.
      */
     public function saveCaso(Request $request)
     {
+        $user = Auth::user();
+        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
+            abort(403);
+        }
+
         $request->validate([
             'id_cliente' => 'required|exists:clientes,id',
             'descripcion_falla' => 'required|string|max:100',
@@ -65,6 +72,13 @@ class CasoController extends Controller
      */
     public function documentarCaso(Request $request)
     {
+        // sólo recepcionista y soporte pueden documentar casos
+        $user = Auth::user();
+        $rol = $user && $user->rol ? strtolower($user->rol->nombre) : '';
+        if (! in_array($rol, ['soporte', 'recepcionista'], true)) {
+            abort(403);
+        }
+
         $request->validate([
             'id_caso' => 'required|exists:casos,id',
             'id_pieza_soporte' => 'required|array',
@@ -108,11 +122,22 @@ class CasoController extends Controller
      */
     public function updateCaso(Request $request)
     {
-        // impedir que el personal de soporte (técnicos) modifique casos
         $user = Auth::user();
-        if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
+        $rol = $user && $user->rol ? strtolower($user->rol->nombre) : '';
+
+        // sólo recepcionista puede actualizar cualquier caso; soporte solo el que
+        // tenga asignado. administradores/supervisores no pueden modificar.
+        if ($rol === 'soporte') {
+            $casoCheck = Caso::find($request->id);
+            if (! $casoCheck || $casoCheck->id_usuario !== $user->id) {
+                abort(403);
+            }
+        } elseif ($rol === 'recepcionista') {
+            // permitido
+        } else {
             abort(403);
         }
+
         $request->validate([
             'id' => 'required|exists:casos,id',
             'descripcion_falla' => 'required|string|max:100',
