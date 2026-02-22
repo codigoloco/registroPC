@@ -32,7 +32,7 @@
         <x-button onclick="generarReporte('grafica')" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-none shadow-sm">
             {{ __('Generar Gráfica') }}
         </x-button>
-        <x-secondary-button onclick="generarReporte('estadistica')" class="border-blue-200 text-blue-700 hover:bg-blue-50">
+        <x-secondary-button onclick="generarReporte('tabla')" class="border-blue-200 text-blue-700 hover:bg-blue-50">
             {{ __('Generar Estadística') }}
         </x-secondary-button>
     </div>

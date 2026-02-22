@@ -148,6 +148,31 @@ class AuthorizationTest extends TestCase
         $resp->assertStatus(403);
     }
 
+    public function test_soporte_cannot_access_client_management()
+    {
+        $soporte = $this->createRoleUser('soporte');
+
+        // link shouldn't be visible on home
+        $resp = $this->actingAs($soporte)->get(route('home'));
+        $resp->assertDontSee('Clientes');
+
+        // visiting the management route should be forbidden
+        $resp = $this->actingAs($soporte)->get(route('gestion-clientes'));
+        $resp->assertStatus(403);
+
+        // attempting to create a client is already covered but double-check
+        $resp = $this->actingAs($soporte)->post(route('clientes.save'), [
+            'cedula' => 42,
+            'nombre' => 'X',
+            'apellido' => 'Y',
+            'direccion' => 'Z',
+            'tipo_cliente' => 'natural',
+            'telefonos' => ['1'],
+            'emails' => ['a@b.com'],
+        ]);
+        $resp->assertStatus(403);
+    }
+
     public function test_admin_cannot_modify_domain_data_but_can_manage_users_and_view_audit()
     {
         $admin = $this->createRoleUser('administrador');
@@ -200,6 +225,9 @@ class AuthorizationTest extends TestCase
         // supervisor may retrieve data
         $resp = $this->actingAs($sup)->get(route('reportes.data'), ['tipoReporte' => 'recibidos_atencion']);
         $resp->assertStatus(200);
+        $json = $resp->json();
+        $this->assertArrayHasKey('labels', $json);
+        $this->assertArrayHasKey('data', $json);
 
         // supervisor should not be able to document (only soporte/recepcionista)
         $resp = $this->actingAs($sup)->post(route('casos.documentar'), [

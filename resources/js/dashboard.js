@@ -2,6 +2,9 @@
  * Lógica del Dashboard para Reportes y Gráficas
  */
 
+// import Chart.js to ensure it is bundled via Vite
+import Chart from 'chart.js/auto';
+
 let myChart = null;
 
 export function initDashboard() {
@@ -50,7 +53,6 @@ async function generarReporte(tipoVisualizacion) {
             text: 'Hubo un error al generar el reporte.'
         });
     }
-}
 
 function mostrarGrafica(data, tipo, container, title) {
     container.classList.remove('hidden');
@@ -62,17 +64,14 @@ function mostrarGrafica(data, tipo, container, title) {
         myChart.destroy();
     }
 
-    // Chart.js should be available globally if loaded via cdn or via import
-    // If using Vite and import Chart from 'chart.js/auto', we might need to handle it differently
-    // For now, keeping the global Chart expectation if it's in the template
-    if (typeof Chart !== 'undefined') {
-        myChart = new Chart(ctx, {
+    // Chart.js is imported at top; use it directly
+    myChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: data.labels,
                 datasets: [{
                     label: 'Total',
-                    data: data.data,
+                    data: data.data.map(v => Number(v) || 0),
                     backgroundColor: 'rgba(59, 130, 246, 0.5)', // Blue 500 with opacity
                     borderColor: 'rgba(30, 64, 175, 1)',   // Blue 800
                     borderWidth: 2,

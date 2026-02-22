@@ -66,9 +66,11 @@
                 {{ __('Inicio') }}
             </x-nav-link>
 
-            <x-nav-link href="{{ route('gestion-clientes') }}" :active="request()->routeIs('gestion-clientes')">
-                {{ __('Clientes') }}
-            </x-nav-link>
+            @if(!Auth::user()->rol || strtolower(Auth::user()->rol->nombre) !== 'soporte')
+                <x-nav-link href="{{ route('gestion-clientes') }}" :active="request()->routeIs('gestion-clientes')">
+                    {{ __('Clientes') }}
+                </x-nav-link>
+            @endif
 
             <x-nav-link href="{{ route('gestion-casos') }}" :active="request()->routeIs('gestion-casos')">
                 {{ __('Casos') }}
@@ -181,9 +183,11 @@
                 {{ __('Inicio') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link href="{{ route('gestion-clientes') }}" :active="request()->routeIs('gestion-clientes')">
-                {{ __('Clientes') }}
-            </x-responsive-nav-link>
+            @if(!Auth::user()->rol || strtolower(Auth::user()->rol->nombre) !== 'soporte')
+                <x-responsive-nav-link href="{{ route('gestion-clientes') }}" :active="request()->routeIs('gestion-clientes')">
+                    {{ __('Clientes') }}
+                </x-responsive-nav-link>
+            @endif
 
             <x-responsive-nav-link href="{{ route('gestion-casos') }}" :active="request()->routeIs('gestion-casos')">
                 {{ __('Casos') }}
@@ -193,13 +197,17 @@
                 {{ __('Equipos') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link href="{{ route('estadisticas') }}" :active="request()->routeIs('estadisticas')">
-                {{ __('Gráficas y Estadisticas') }}
-            </x-responsive-nav-link>
+            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) !== 'soporte')
+                <x-responsive-nav-link href="{{ route('estadisticas') }}" :active="request()->routeIs('estadisticas')">
+                    {{ __('Gráficas y Estadisticas') }}
+                </x-responsive-nav-link>
+            @endif
 
-            <x-responsive-nav-link href="{{ route('gestion-usuarios') }}" :active="request()->routeIs('gestion-usuarios')">
-                {{ __('Usuarios') }}
-            </x-responsive-nav-link>
+            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) !== 'soporte')
+                <x-responsive-nav-link href="{{ route('gestion-usuarios') }}" :active="request()->routeIs('gestion-usuarios')">
+                    {{ __('Usuarios') }}
+                </x-responsive-nav-link>
+            @endif
 
             <x-responsive-nav-link href="{{ route('gestion-auditoria') }}" :active="request()->routeIs('gestion-auditoria')">
                 {{ __('Auditoria') }}

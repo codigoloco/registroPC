@@ -16,6 +16,12 @@ class ClienteController extends Controller
      */
     public function index()
     {
+        // soporte users should not access the clients section
+        $user = Auth::user();
+        if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
+            abort(403);
+        }
+
         $clientes = Cliente::orderBy('created_at', 'desc')->paginate(10);
         return view('gestion-clientes', compact('clientes'));
     }
