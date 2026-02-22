@@ -20,22 +20,38 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'admin',
             'lastname' => 'System',
-            'email' => 'test@test.com',
-            'password' => '123456789',            
+            'email' => 'admin@test.com',
+            'password' => '12341234',
             'id_rol' => 1, // Administrador
         ]);
 
         User::factory()->create([
-            'name' => 'Tecnico',
-            'lastname' => 'De Soporte',
-            'email' => 'tecnico@test.com',
-            'password' => '123456789',            
+            'name' => 'SoporteTecnico',
+            'lastname' => 'TEST',
+            'email' => 'soporte@test.com',
+            'password' => '12341234',
             'id_rol' => 2, // Soporte
+        ]);
+
+        User::factory()->create([
+            'name' => 'Recepcionista',
+            'lastname' => 'TEST',
+            'email' => 'recep@test.com',
+            'password' => '12341234',
+            'id_rol' => 3, // Recepcionista
+        ]);
+
+        User::factory()->create([
+            'name' => 'Supervisor',
+            'lastname' => 'TEST',
+            'email' => 'supervisor@test.com',
+            'password' => '12341234',
+            'id_rol' => 4, // Supervisor
         ]);
 
         // Llamar al seeder de piezas de soporte
         $this->call([
-            PiezaSoporteSeeder::class,
+            PiezaSoporteSeeder::class ,
         ]);
     }
 }
