@@ -30,7 +30,7 @@ class CasoController extends Controller
     public function saveCaso(Request $request)
     {
         $user = Auth::user();
-        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
+        if (!$user || !$user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
             abort(403);
         }
 
@@ -72,10 +72,10 @@ class CasoController extends Controller
      */
     public function documentarCaso(Request $request)
     {
-        // sólo recepcionista y soporte pueden documentar casos
+        // sólo soporte puede documentar casos
         $user = Auth::user();
         $rol = $user && $user->rol ? strtolower($user->rol->nombre) : '';
-        if (! in_array($rol, ['soporte', 'recepcionista'], true)) {
+        if ($rol !== 'soporte') {
             abort(403);
         }
 
@@ -129,12 +129,14 @@ class CasoController extends Controller
         // tenga asignado. administradores/supervisores no pueden modificar.
         if ($rol === 'soporte') {
             $casoCheck = Caso::find($request->id);
-            if (! $casoCheck || $casoCheck->id_usuario !== $user->id) {
+            if (!$casoCheck || $casoCheck->id_usuario !== $user->id) {
                 abort(403);
             }
-        } elseif ($rol === 'recepcionista') {
-            // permitido
-        } else {
+        }
+        elseif ($rol === 'recepcionista') {
+        // permitido
+        }
+        else {
             abort(403);
         }
 
@@ -201,9 +203,9 @@ class CasoController extends Controller
     {
         return response()->json(
             Caso::with('cliente')
-                ->where('estatus', '!=', 'entregado')
-                ->orderBy('id', 'desc')
-                ->get()
+            ->where('estatus', '!=', 'entregado')
+            ->orderBy('id', 'desc')
+            ->get()
         );
     }
 
@@ -213,9 +215,9 @@ class CasoController extends Controller
     public function getTecnicos()
     {
         return response()->json(
-            User::whereHas('rol', function($q) {
-                $q->where('nombre', 'soporte');
-            })
+            User::whereHas('rol', function ($q) {
+            $q->where('nombre', 'soporte');
+        })
             ->where('id_estatus', 1) // Asumiendo 1 es activo
             ->get()
         );
@@ -236,7 +238,7 @@ class CasoController extends Controller
         $query = Caso::with(['cliente', 'tecnico']);
 
         // asumimos que el nombre del rol administrador es 'administrador'
-        if (! $user->rol || strtolower($user->rol->nombre) !== 'administrador') {
+        if (!$user->rol || strtolower($user->rol->nombre) !== 'administrador') {
             $query->where('id_usuario', $user->id);
         }
 
@@ -280,7 +282,8 @@ class CasoController extends Controller
             ]);
 
             return redirect()->back()->with('success', "Técnico asignado exitosamente al Caso #{$caso->id}.");
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al asignar técnico: ' . $e->getMessage());
         }
     }
