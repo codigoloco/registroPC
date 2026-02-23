@@ -48,6 +48,22 @@ class RecepcionController extends Controller
     }
 
     /**
+     * Genera un comprobante PDF individual para una recepción específica.
+     */
+    public function pdfIndividual($id)
+    {
+        $recepcion = RecepcionDeEquipo::with([
+            'caso.cliente',
+            'equipo.modelo',
+            'equipo.tipo',
+            'usuarioRecepcion',
+            'tecnicoAsignado'
+        ])->findOrFail($id);
+
+        return view('recepcion-individual-pdf', compact('recepcion'));
+    }
+
+    /**
      * Página imprimible que muestra el listado completo de salidas de equipo.
      * Similar a `pdf()` pero para el modelo `EntregaDeEquipo`.
      */
@@ -61,6 +77,23 @@ class RecepcionController extends Controller
         ])->orderBy('created_at', 'desc')->get();
 
         return view('salidas-pdf', compact('salidas'));
+    }
+
+    /**
+     * Genera un comprobante PDF individual para una salida específica.
+     */
+    public function pdfIndividualSalida($id)
+    {
+        $salida = EntregaDeEquipo::with([
+            'caso.cliente',
+            'equipo.modelo',
+            'equipo.tipo',
+            'usuarioEntrega',
+            'caso.documentacion.piezaSoporte',
+            'caso.recepcionDeEquipo'
+        ])->findOrFail($id);
+
+        return view('salida-individual-pdf', compact('salida'));
     }
 
     /**
@@ -86,7 +119,7 @@ class RecepcionController extends Controller
     {
         // sólo recepcionista puede registrar la recepción
         $user = Auth::user();
-        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
+        if (!$user || !$user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
             abort(403);
         }
         $request->validate([
@@ -100,13 +133,13 @@ class RecepcionController extends Controller
         $caso = Caso::findOrFail($request->id_caso);
 
         // Buscar técnico de soporte disponible con menos carga (casos no entregados)
-        $tecnico = User::whereHas('rol', function($q) {
-                $q->where('nombre', 'soporte');
-            })
+        $tecnico = User::whereHas('rol', function ($q) {
+            $q->where('nombre', 'soporte');
+        })
             ->where('id_estatus', 1) // Activo
-            ->withCount(['casos' => function($q) {
-                $q->where('estatus', '!=', 'entregado');
-            }])
+            ->withCount(['casos' => function ($q) {
+            $q->whereIn('estatus', ['espera', 'asignado']);
+        }])
             ->orderBy('casos_count', 'asc')
             ->first();
 
@@ -149,7 +182,7 @@ class RecepcionController extends Controller
     {
         // sólo recepcionista puede registrar salidas
         $user = Auth::user();
-        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
+        if (!$user || !$user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
             abort(403);
         }
         $request->validate([
@@ -185,7 +218,7 @@ class RecepcionController extends Controller
     {
         // sólo recepcionista puede modificar recepciones
         $user = Auth::user();
-        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
+        if (!$user || !$user->rol || strtolower($user->rol->nombre) !== 'recepcionista') {
             abort(403);
         }
         $request->validate([
@@ -194,7 +227,7 @@ class RecepcionController extends Controller
             'tipo_atencion' => 'required|in:presupuesto,garantia',
             'falla_tecnica' => 'required|string|max:255',
             'pago' => 'nullable|in:si,no',
-            'deposito' => 'nullable|in:Tecnico,Deposito',
+            'deposito' => 'nullable|in:Tecnico,Deposito,Sin entregar',
         ]);
 
         $caso = Caso::findOrFail($request->id_caso);
@@ -238,7 +271,10 @@ class RecepcionController extends Controller
         // Incluir datos de entrega para el frontend si es necesario
         if ($entrega) {
             $data['id_usuario_entrega'] = $entrega->id_usuario_entrega;
-            $data['deposito'] = $entrega->deposito;
+            $data['deposito'] = ucfirst($entrega->deposito); // Capitalizado para hacer match con select (Tecnico o Deposito)
+        }
+        else {
+            $data['deposito'] = 'Sin entregar';
         }
 
         return response()->json($data);

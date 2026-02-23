@@ -34,6 +34,14 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
+            'name' => 'SoporteTecnico2',
+            'lastname' => 'TEST',
+            'email' => 'soporte2@test.com',
+            'password' => '12341234',
+            'id_rol' => 2, // Soporte
+        ]);
+
+        User::factory()->create([
             'name' => 'Recepcionista',
             'lastname' => 'TEST',
             'email' => 'recep@test.com',

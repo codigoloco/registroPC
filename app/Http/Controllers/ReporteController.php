@@ -30,10 +30,9 @@ class ReporteController extends Controller
 
     public function getData(Request $request)
     {
-        // sólo supervisor genera estadísticas reales; administradores pueden
-        // ver la página pero no pedir los valores.
+        // administrador y supervisor generan estadísticas reales
         $user = Auth::user();
-        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'supervisor') {
+        if (!$user || !$user->rol || !in_array(strtolower($user->rol->nombre), ['supervisor', 'administrador'])) {
             abort(403);
         }
 
@@ -138,85 +137,93 @@ class ReporteController extends Controller
         ]);
     }
 
-        /**
-         * Genera un reporte imprimible (PDF mediante impresión del navegador)
-         * con la misma lógica que getData pero sin paginar. Los filtros se reciben
-         * por query string como en el dashboard.
-         */
-        public function pdf(Request $request)
-        {
+    /**
+     * Genera un reporte imprimible (PDF mediante impresión del navegador)
+     * con la misma lógica que getData pero sin paginar. Los filtros se reciben
+     * por query string como en el dashboard.
+     */
+    public function pdf(Request $request)
+    {
         // same restriction as getData
         $user = Auth::user();
-        if (! $user || ! $user->rol || strtolower($user->rol->nombre) !== 'supervisor') {
+        if (!$user || !$user->rol || !in_array(strtolower($user->rol->nombre), ['supervisor', 'administrador'])) {
             abort(403);
         }
 
-            $fechaFin = $request->input('fechaFin');
+        $tipoReporte = $request->input('tipoReporte');
+        $fechaInicio = $request->input('fechaInicio');
+        $fechaFin = $request->input('fechaFin');
+        $formato = $request->input('formato', 'grafica');
 
-            $data = $this->buildReportData($tipoReporte, $fechaInicio, $fechaFin);
+        $data = $this->buildReportData($tipoReporte, $fechaInicio, $fechaFin);
 
-            return view('estadisticas-pdf', compact('data', 'tipoReporte', 'fechaInicio', 'fechaFin'));
+        if ($formato === 'tabla') {
+            return view('estadisticas-tabla-pdf', compact('data', 'tipoReporte', 'fechaInicio', 'fechaFin'));
         }
 
-        /**
-         * Método auxiliar que encapsula la construcción de las series para
-         * un determinado tipo de reporte y rango de fechas. Devuelve un arreglo
-         * con "labels" y "data" tal como lo hace el endpoint JSON.
-         */
-        private function buildReportData($tipoReporte, $fechaInicio = null, $fechaFin = null)
-        {
-            $data = [];
-            switch ($tipoReporte) {
-                case 'recibidos_atencion':
-                    $query = DB::table('recepcion_de_equipo')
-                        ->select('tipo_atencion as label', DB::raw('count(*) as total'))
-                        ->groupBy('tipo_atencion');
-                    break;
-                case 'recibidos_tipo_equipo':
-                    $query = DB::table('recepcion_de_equipo as re')
-                        ->join('equipos as e', 're.id_equipo', '=', 'e.id')
-                        ->join('tipo_de_equipo as te', 'e.id_tipo', '=', 'te.id')
-                        ->select('te.nombre as label', DB::raw('count(*) as total'))
-                        ->groupBy('te.nombre');
-                    break;
-                case 'entregados_atencion':
-                    $query = DB::table('entrega_de_equipo as ent')
-                        ->join('recepcion_de_equipo as re', 'ent.id_caso', '=', 're.id_caso')
-                        ->select('re.tipo_atencion as label', DB::raw('count(*) as total'))
-                        ->groupBy('re.tipo_atencion');
-                    break;
-                case 'entregados_tipo_equipo':
-                    $query = DB::table('entrega_de_equipo as ent')
-                        ->join('equipos as e', 'ent.id_equipo', '=', 'e.id')
-                        ->join('tipo_de_equipo as te', 'e.id_tipo', '=', 'te.id')
-                        ->select('te.nombre as label', DB::raw('count(*) as total'))
-                        ->groupBy('te.nombre');
-                    break;
-                case 'piezas_soporte':
-                    $query = DB::table('documentacion_de_caso as doc')
-                        ->join('pieza_soporte as pz', 'doc.id_pieza_soporte', '=', 'pz.id')
-                        ->select('pz.nombre as label', DB::raw('SUM(doc.cantidad) as total'))
-                        ->groupBy('pz.nombre');
-                    break;
-                default:
-                    $query = collect();
-            }
+        return view('estadisticas-pdf', compact('data', 'tipoReporte', 'fechaInicio', 'fechaFin'));
+    }
 
-            if (isset($query) && ! $query instanceof \Illuminate\Support\Collection) {
-                if ($fechaInicio) {
-                    $query->whereDate('created_at', '>=', $fechaInicio);
-                }
-                if ($fechaFin) {
-                    $query->whereDate('created_at', '<=', $fechaFin);
-                }
-                $results = $query->get();
-                $data['labels'] = $results->pluck('label');
-                $data['data'] = $results->pluck('total');
-            } else {
-                $data['labels'] = collect();
-                $data['data'] = collect();
-            }
-
-            return $data;
+    /**
+     * Método auxiliar que encapsula la construcción de las series para
+     * un determinado tipo de reporte y rango de fechas. Devuelve un arreglo
+     * con "labels" y "data" tal como lo hace el endpoint JSON.
+     */
+    private function buildReportData($tipoReporte, $fechaInicio = null, $fechaFin = null)
+    {
+        $data = [];
+        switch ($tipoReporte) {
+            case 'recibidos_atencion':
+                $query = DB::table('recepcion_de_equipo')
+                    ->select('tipo_atencion as label', DB::raw('count(*) as total'))
+                    ->groupBy('tipo_atencion');
+                break;
+            case 'recibidos_tipo_equipo':
+                $query = DB::table('recepcion_de_equipo as re')
+                    ->join('equipos as e', 're.id_equipo', '=', 'e.id')
+                    ->join('tipo_de_equipo as te', 'e.id_tipo', '=', 'te.id')
+                    ->select('te.nombre as label', DB::raw('count(*) as total'))
+                    ->groupBy('te.nombre');
+                break;
+            case 'entregados_atencion':
+                $query = DB::table('entrega_de_equipo as ent')
+                    ->join('recepcion_de_equipo as re', 'ent.id_caso', '=', 're.id_caso')
+                    ->select('re.tipo_atencion as label', DB::raw('count(*) as total'))
+                    ->groupBy('re.tipo_atencion');
+                break;
+            case 'entregados_tipo_equipo':
+                $query = DB::table('entrega_de_equipo as ent')
+                    ->join('equipos as e', 'ent.id_equipo', '=', 'e.id')
+                    ->join('tipo_de_equipo as te', 'e.id_tipo', '=', 'te.id')
+                    ->select('te.nombre as label', DB::raw('count(*) as total'))
+                    ->groupBy('te.nombre');
+                break;
+            case 'piezas_soporte':
+                $query = DB::table('documentacion_de_caso as doc')
+                    ->join('pieza_soporte as pz', 'doc.id_pieza_soporte', '=', 'pz.id')
+                    ->select('pz.nombre as label', DB::raw('SUM(doc.cantidad) as total'))
+                    ->groupBy('pz.nombre');
+                break;
+            default:
+                $query = collect();
         }
+
+        if (isset($query) && !$query instanceof \Illuminate\Support\Collection) {
+            if ($fechaInicio) {
+                $query->whereDate('created_at', '>=', $fechaInicio);
+            }
+            if ($fechaFin) {
+                $query->whereDate('created_at', '<=', $fechaFin);
+            }
+            $results = $query->get();
+            $data['labels'] = $results->pluck('label');
+            $data['data'] = $results->pluck('total');
+        }
+        else {
+            $data['labels'] = collect();
+            $data['data'] = collect();
+        }
+
+        return $data;
+    }
 }

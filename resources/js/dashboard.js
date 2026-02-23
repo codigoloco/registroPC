@@ -27,7 +27,7 @@ async function generarReporte(tipoVisualizacion) {
     const tableTitle = document.getElementById('tableTitle');
     const tableBody = document.getElementById('tableBody');
 
-    if(!initialState) return; // Guard clause
+    if (!initialState) return; // Guard clause
 
     // Reset UI
     initialState.classList.add('hidden');
@@ -54,18 +54,18 @@ async function generarReporte(tipoVisualizacion) {
         });
     }
 
-function mostrarGrafica(data, tipo, container, title) {
-    container.classList.remove('hidden');
-    title.textContent = `Gráfica: ${formatTitle(tipo)}`;
+    function mostrarGrafica(data, tipo, container, title) {
+        container.classList.remove('hidden');
+        title.textContent = `Gráfica: ${formatTitle(tipo)}`;
 
-    const ctx = document.getElementById('reportChart').getContext('2d');
-    
-    if (myChart) {
-        myChart.destroy();
-    }
+        const ctx = document.getElementById('reportChart').getContext('2d');
 
-    // Chart.js is imported at top; use it directly
-    myChart = new Chart(ctx, {
+        if (myChart) {
+            myChart.destroy();
+        }
+
+        // Chart.js is imported at top; use it directly
+        myChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: data.labels,
@@ -75,7 +75,8 @@ function mostrarGrafica(data, tipo, container, title) {
                     backgroundColor: 'rgba(59, 130, 246, 0.5)', // Blue 500 with opacity
                     borderColor: 'rgba(30, 64, 175, 1)',   // Blue 800
                     borderWidth: 2,
-                    borderRadius: 4
+                    borderRadius: 4,
+                    maxBarThickness: 50
                 }]
             },
             options: {
@@ -125,5 +126,29 @@ function formatTitle(slug) {
     return titles[slug] || slug;
 }
 
+/**
+ * Abre el PDF de la gráfica con los filtros actuales
+ */
+function exportarGrafica() {
+    const tipoReporte = document.getElementById('tipoReporte').value;
+    const fechaInicio = document.getElementById('fechaInicio').value;
+    const fechaFin = document.getElementById('fechaFin').value;
+
+    window.open(`/estadisticas/pdf?tipoReporte=${tipoReporte}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&formato=grafica`, '_blank');
+}
+
+/**
+ * Abre el PDF de la tabla de estadísticas con los filtros actuales
+ */
+function exportarEstadistica() {
+    const tipoReporte = document.getElementById('tipoReporte').value;
+    const fechaInicio = document.getElementById('fechaInicio').value;
+    const fechaFin = document.getElementById('fechaFin').value;
+
+    window.open(`/estadisticas/pdf?tipoReporte=${tipoReporte}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&formato=tabla`, '_blank');
+}
+
 // Global exposure
 window.generarReporte = generarReporte;
+window.exportarGrafica = exportarGrafica;
+window.exportarEstadistica = exportarEstadistica;

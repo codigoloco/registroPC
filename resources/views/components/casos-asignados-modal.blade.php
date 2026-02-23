@@ -48,6 +48,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -82,6 +83,21 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                         <span x-text="new Date(caso.created_at).toLocaleDateString()"></span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button @click="
+                                            // Se cierra momentáneamente este modal y se abre el de modificar caso
+                                            showAssignedCasesModal = false;
+                                            
+                                            // Se despacha evento al componente registrar-caso-modal que ya existe y sabe como editar
+                                            // Simulamos que el usuario buscó este ID
+                                            setTimeout(() => {
+                                                $dispatch('open-editar-caso', { id: caso.id });
+                                                showRegistrarCasoModal = true;
+                                            }, 100);
+                                        " class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
+                                            Editar
+                                        </button>
                                     </td>
                                 </tr>
                             </template>

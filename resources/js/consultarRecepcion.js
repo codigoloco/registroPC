@@ -10,7 +10,7 @@ export function consultarRecepcion() {
             tipo_atencion: 'presupuesto',
             pago: '',
             falla_tecnica: '',
-            deposito: 'Tecnico',
+            deposito: 'Sin entregar',
             fecha_recepcion: '-',
             fecha_salida: '-'
         },
@@ -55,7 +55,7 @@ export function consultarRecepcion() {
 
         get filteredCasos() {
             if (!this.searchCasoInput) return this.casos.slice(0, 10);
-            
+
             const searchTerm = this.searchCasoInput.toString().toLowerCase();
             return this.casos.filter(c => {
                 const clienteNombre = `${c.cliente.nombre} ${c.cliente.apellido || ''}`.toLowerCase();
@@ -65,16 +65,16 @@ export function consultarRecepcion() {
 
         get filteredEquipos() {
             if (!this.searchEquipo) return this.equipos.slice(0, 10);
-            
+
             const searchTerm = this.searchEquipo.toString().toLowerCase();
             return this.equipos.filter(e => {
                 const modeloNombre = (e.modelo?.nombre || '').toLowerCase();
                 const tipoNombre = (e.tipo?.nombre || '').toLowerCase();
                 const serial = (e.serial_equipo || '').toLowerCase();
-                return e.id.toString().includes(searchTerm) || 
-                       modeloNombre.includes(searchTerm) || 
-                       tipoNombre.includes(searchTerm) || 
-                       serial.includes(searchTerm);
+                return e.id.toString().includes(searchTerm) ||
+                    modeloNombre.includes(searchTerm) ||
+                    tipoNombre.includes(searchTerm) ||
+                    serial.includes(searchTerm);
             }).slice(0, 10);
         },
 
@@ -95,13 +95,13 @@ export function consultarRecepcion() {
             if (!this.idCasoSearch) return;
             this.loading = true;
             this.error = '';
-            
+
             fetch(`/recepcion/search/${this.idCasoSearch}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
                         this.error = data.error;
-                        this.recepcion = { id_equipo: '', tipo_atencion: 'presupuesto', pago: '', falla_tecnica: '', deposito: 'Tecnico', fecha_recepcion: '-', fecha_salida: '-' };
+                        this.recepcion = { id_equipo: '', tipo_atencion: 'presupuesto', pago: '', falla_tecnica: '', deposito: 'Sin entregar', fecha_recepcion: '-', fecha_salida: '-' };
                         this.searchEquipo = '';
                     } else {
                         this.recepcion = data;
