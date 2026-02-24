@@ -134,6 +134,7 @@
                             <th class="px-3 py-3 font-bold uppercase">{{ __('Pieza Reemplazada') }}</th>
                             <th class="px-3 py-3 font-bold uppercase">{{ __('Atención') }}</th>
                             <th class="px-3 py-3 font-bold uppercase">{{ __('Entregado por') }}</th>
+                            <th class="px-3 py-3 font-bold uppercase text-center">{{ __('Acciones') }}</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -160,6 +161,13 @@
                                         :class="item.deposito === 'tecnico' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'"
                                         class="px-2 py-1 rounded-full text-[10px] font-bold uppercase"
                                         x-text="item.deposito"></span>
+                                </td>
+                                <td class="px-3 py-3 text-center">
+                                    <a :href="'/salida/' + item.id + '/pdf'" target="_blank" class="inline-flex items-center text-red-600 hover:text-red-800 transition-colors" title="Generar PDF">
+                                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </a>
                                 </td>
                             </tr>
                         </template>

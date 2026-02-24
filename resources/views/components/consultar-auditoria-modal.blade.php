@@ -4,45 +4,17 @@
     @endpush
 @endonce
 
-<div x-show="showAuditoriaModal" 
-    x-data="gestionAuditoria"
-    style="display: none;" 
-    class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0">
-    
-    <!-- Fondo Oscuro (Backdrop) -->
-    <div x-show="showAuditoriaModal" class="fixed inset-0 transform transition-all" x-on:click="showAuditoriaModal = false"
-        x-transition:enter="ease-out duration-300"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="ease-in duration-200"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0">
-        <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
-    </div>
-
-    <!-- Panel del Modal -->
-    <div x-show="showAuditoriaModal" class="mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:max-w-6xl sm:mx-auto"
-        x-transition:enter="ease-out duration-300"
-        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave="ease-in duration-200"
-        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-        
-        <!-- Encabezado -->
+<div x-data="gestionAuditoria" class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6">
+    <div class="bg-white dark:bg-gray-800 shadow-xl sm:rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+        <!-- Encabezado del Panel -->
         <div class="bg-blue-600 text-white px-6 py-4 flex items-center justify-between shadow-sm">
-            <span class="text-lg font-semibold">{{ __('Consultar Auditoria') }}</span>
-            <button @click="showAuditoriaModal = false" class="text-white hover:text-gray-200 focus:outline-none">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+            <span class="text-lg font-semibold">{{ __('Panel de Auditoria') }}</span>
         </div>
 
         <div class="p-8 space-y-8 bg-gray-50 dark:bg-gray-900/50">
             
             <!-- Filtros de Consulta -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
                 <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-base">{{ __('Filtros de Consulta') }}</h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -79,7 +51,7 @@
             </div>
 
             <!-- Resultados de Auditoria -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-bold text-gray-800 dark:text-gray-100 text-base">{{ __('Resultados de Auditoria') }}</h3>
                     <div x-show="loading" class="text-blue-600 text-sm flex items-center gap-2">
@@ -87,7 +59,7 @@
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Cargando...
+                        {{ __('Cargando...') }}
                     </div>
                 </div>
                 
@@ -122,12 +94,12 @@
                                     <td class="px-3 py-3">
                                         <span class="px-2 py-1 rounded-full text-[10px] font-bold" 
                                               :class="{
-                                                  'bg-green-100 text-green-800': item.sentencia === 'INSERT',
-                                                  'bg-blue-100 text-blue-800': item.sentencia === 'UPDATE',
+                                                  'bg-green-100 text-green-800': ['INSERT', 'INSERT_RECEPCION_AUTO_ASIGNACION', 'REGISTRAR_ENTREGA', 'INSERT_SALIDA', 'INSERT_EQUIPO', 'INSERT_CLIENTE', 'INSERT_USER'].includes(item.sentencia),
+                                                  'bg-blue-100 text-blue-800': ['UPDATE', 'UPDATE_RECEPCION', 'UPDATE_USER'].includes(item.sentencia),
                                                   'bg-purple-100 text-purple-800': item.sentencia === 'DOCUMENTAR',
-                                                  'bg-gray-100 text-gray-800': !['INSERT', 'UPDATE', 'DOCUMENTAR'].includes(item.sentencia)
+                                                  'bg-gray-100 text-gray-800': ['LOGIN', 'LOGOUT'].includes(item.sentencia)
                                               }"
-                                              x-text="item.sentencia"></span>
+                                              x-text="formatAccion(item.sentencia)"></span>
                                     </td>
                                     <td class="px-3 py-3 text-gray-600 dark:text-gray-400 font-mono" x-text="item.ip"></td>
                                     <td class="px-3 py-3 text-gray-600 dark:text-gray-400 italic" x-text="truncateJSON(item.estado_inicial)"></td>
@@ -139,7 +111,7 @@
                                 </tr>
                             </template>
                             <tr x-show="auditorias.length === 0 && !loading">
-                                <td colspan="9" class="px-3 py-10 text-center text-gray-500 italic text-sm">
+                                <td colspan="10" class="px-3 py-10 text-center text-gray-500 italic text-sm">
                                     No se encontraron registros de auditoría.
                                 </td>
                             </tr>
@@ -155,19 +127,17 @@
                     <div class="flex gap-2">
                         <button @click="fetchData(currentPage - 1)" 
                                 :disabled="currentPage === 1 || loading"
-                                class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm disabled:opacity-50 hover:bg-gray-50">
-                            Anterior
+                                class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200">
+                            {{ __('Anterior') }}
                         </button>
                         <button @click="fetchData(currentPage + 1)" 
                                 :disabled="currentPage === lastPage || loading"
-                                class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm disabled:opacity-50 hover:bg-gray-50">
-                            Siguiente
+                                class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200">
+                            {{ __('Siguiente') }}
                         </button>
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
 </div>

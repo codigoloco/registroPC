@@ -80,21 +80,23 @@
                 {{ __('Equipos') }}
             </x-nav-link>
 
-            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) !== 'soporte')
+            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'supervisor')
                 <x-nav-link href="{{ route('estadisticas') }}" :active="request()->routeIs('estadisticas')">
                     {{ __('Gráficas y Estadisticas') }}
                 </x-nav-link>
             @endif
 
-            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) !== 'soporte')
+            @if(Auth::user()->rol && in_array(strtolower(Auth::user()->rol->nombre), ['administrador', 'supervisor']))
                 <x-nav-link href="{{ route('gestion-usuarios') }}" :active="request()->routeIs('gestion-usuarios')">
                     {{ __('Usuarios') }}
                 </x-nav-link>
             @endif
 
-            <x-nav-link href="{{ route('gestion-auditoria') }}" :active="request()->routeIs('gestion-auditoria')">
-                {{ __('Auditoria') }}
-            </x-nav-link>
+            @if(Auth::user()->rol && in_array(strtolower(Auth::user()->rol->nombre), ['administrador', 'supervisor']))
+                <x-nav-link href="{{ route('gestion-auditoria') }}" :active="request()->routeIs('gestion-auditoria')">
+                    {{ __('Auditoria') }}
+                </x-nav-link>
+            @endif
 
             <!-- User Dropdown (Moved below Auditoria) -->
             <div class="pt-4 border-t border-gray-100 dark:border-gray-700 mt-4">
@@ -197,21 +199,23 @@
                 {{ __('Equipos') }}
             </x-responsive-nav-link>
 
-            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) !== 'soporte')
+            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'supervisor')
                 <x-responsive-nav-link href="{{ route('estadisticas') }}" :active="request()->routeIs('estadisticas')">
                     {{ __('Gráficas y Estadisticas') }}
                 </x-responsive-nav-link>
             @endif
 
-            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) !== 'soporte')
+            @if(Auth::user()->rol && in_array(strtolower(Auth::user()->rol->nombre), ['administrador', 'supervisor']))
                 <x-responsive-nav-link href="{{ route('gestion-usuarios') }}" :active="request()->routeIs('gestion-usuarios')">
                     {{ __('Usuarios') }}
                 </x-responsive-nav-link>
             @endif
 
-            <x-responsive-nav-link href="{{ route('gestion-auditoria') }}" :active="request()->routeIs('gestion-auditoria')">
-                {{ __('Auditoria') }}
-            </x-responsive-nav-link>
+            @if(Auth::user()->rol && in_array(strtolower(Auth::user()->rol->nombre), ['administrador', 'supervisor']))
+                <x-responsive-nav-link href="{{ route('gestion-auditoria') }}" :active="request()->routeIs('gestion-auditoria')">
+                    {{ __('Auditoria') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

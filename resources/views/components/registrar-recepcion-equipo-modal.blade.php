@@ -186,6 +186,7 @@
                             <th class="px-3 py-2 text-left uppercase font-bold">{{ __('Tipo Cliente') }}</th>
                             <th class="px-3 py-2 text-left uppercase font-bold">{{ __('Falla') }}</th>
                             <th class="px-3 py-2 text-left uppercase font-bold">{{ __('Pago') }}</th>
+                            <th class="px-3 py-2 text-center uppercase font-bold">{{ __('Acciones') }}</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -202,6 +203,13 @@
                                 <td class="px-3 py-2 max-w-xs truncate text-gray-600 dark:text-gray-300" :title="item.falla_tecnica" x-text="item.falla_tecnica"></td>
                                 <td class="px-3 py-1">
                                     <span :class="item.pago === 'si' ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'" class="font-bold uppercase" x-text="item.pago || 'no'"></span>
+                                </td>
+                                <td class="px-3 py-2 text-center">
+                                    <a :href="'/recepcion/' + item.id + '/pdf'" target="_blank" class="inline-flex items-center text-red-600 hover:text-red-800 transition-colors" title="Generar PDF">
+                                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </a>
                                 </td>
                             </tr>
                         </template>

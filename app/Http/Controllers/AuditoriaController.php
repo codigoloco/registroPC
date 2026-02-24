@@ -20,16 +20,16 @@ class AuditoriaController extends Controller
      */
     public function getData(Request $request)
     {
-        $query = Auditoria::with(['usuario', 'caso'])->orderBy('created_at', 'desc');
+        $query = Auditoria::with(['usuario', 'caso'])->orderBy('id', 'desc');
 
         // Filtro por usuario
         if ($request->filled('usuario')) {
             $usuario = $request->usuario;
-            $query->whereHas('usuario', function($q) use ($usuario) {
-                                // además de nombre o id, permitimos buscar por correo
-                                $q->where('name', 'like', "%{$usuario}%")
-                                    ->orWhere('id', 'like', "%{$usuario}%")
-                                    ->orWhere('email', 'like', "%{$usuario}%");
+            $query->whereHas('usuario', function ($q) use ($usuario) {
+                // además de nombre o id, permitimos buscar por correo
+                $q->where('name', 'like', "%{$usuario}%")
+                    ->orWhere('id', 'like', "%{$usuario}%")
+                    ->orWhere('email', 'like', "%{$usuario}%");
             });
         }
 

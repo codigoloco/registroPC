@@ -28,21 +28,23 @@
 
             <!-- Botones para abrir los modales -->
             <div class="flex flex-wrap justify-center gap-4">
-                <x-button @click="showCrearCasoModal = true"
-                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('Crear Caso') }}
-                </x-button>
                 @if(!(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'soporte'))
+                    <x-button @click="showCrearCasoModal = true"
+                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                        {{ __('Crear Caso') }}
+                    </x-button>
+                @endif
+                @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'supervisor')
                     <x-button @click="showAsignarTecnicoModal = true"
                         class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
                         {{ __('Asignar Técnico') }}
                     </x-button>
-
-                    <x-button @click="showRegistrarCasoModal = true"
-                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                        {{ __('Consultar / Modificar Caso') }}
-                    </x-button>
                 @endif
+
+                <x-button @click="showRegistrarCasoModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                    {{ __('Consultar / Modificar Caso') }}
+                </x-button>
 
                 <x-button @click="showDocumentarModal = true"
                     class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
@@ -88,7 +90,7 @@
                             {{ $caso->cliente->nombre ?? 'N/A' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-                            {{ $caso->tecnico->name ?? 'N/A' }}
+                            {{ $caso->recepcionDeEquipo->tecnicoAsignado->name ?? 'N/A' }}
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300 max-w-xs truncate">
                             {{ $caso->descripcion_falla }}
@@ -114,15 +116,13 @@
             <x-crear-caso-modal />
 
             <!-- Modal Component: Registrar Caso (Nuevo) -->
-            @if(!(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'soporte'))
-                <x-registrar-caso-modal />
-            @endif
+            <x-registrar-caso-modal />
 
             <!-- Modal Component: Documentar Caso -->
             <x-documentar-caso-modal />
 
             <!-- Modal Component: Asignar Técnico -->
-            @if(!(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'soporte'))
+            @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'supervisor')
                 <x-asignar-tecnico-modal />
             @endif
 

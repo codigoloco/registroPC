@@ -8,7 +8,7 @@ export function registrarSalida() {
         historial: [],
         pagination: {},
         loading: false,
-        
+
         // Búsqueda Filtrable de Casos
         casos: [],
         searchCaso: '',
@@ -31,7 +31,7 @@ export function registrarSalida() {
 
         get filteredCasos() {
             if (!this.searchCaso) return this.casos.slice(0, 10);
-            
+
             const searchTerm = this.searchCaso.toString().toLowerCase();
             return this.casos.filter(c => {
                 const clienteNombre = `${c.cliente.nombre} ${c.cliente.apellido || ''}`.toLowerCase();

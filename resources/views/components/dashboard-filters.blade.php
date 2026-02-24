@@ -28,12 +28,21 @@
     </div>
 
     {{-- Action Buttons --}}
-    <div class="flex flex-wrap gap-4 pt-4 border-t border-gray-100">
+    <div class="flex flex-wrap gap-4 pt-4 border-t border-gray-100 items-center">
         <x-button onclick="generarReporte('grafica')" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-none shadow-sm">
             {{ __('Generar Gráfica') }}
         </x-button>
         <x-secondary-button onclick="generarReporte('tabla')" class="border-blue-200 text-blue-700 hover:bg-blue-50">
             {{ __('Generar Estadística') }}
         </x-secondary-button>
+        
+        <div class="ml-auto flex gap-2">
+            <x-button onclick="exportarGrafica()" class="bg-red-600 hover:bg-red-700 active:bg-red-800 border-none shadow-sm">
+                {{ __('Exportar Gráfica') }}
+            </x-button>
+            <x-button onclick="exportarEstadistica()" class="bg-green-600 hover:bg-green-700 active:bg-green-800 border-none shadow-sm">
+                {{ __('Exportar Estadística') }}
+            </x-button>
+        </div>
     </div>
 </div>

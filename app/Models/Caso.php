@@ -25,7 +25,7 @@ class Caso extends Model
      */
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'id_cliente');
+        return $this->belongsTo(Cliente::class , 'id_cliente');
     }
 
     /**
@@ -33,7 +33,7 @@ class Caso extends Model
      */
     public function tecnico()
     {
-        return $this->belongsTo(User::class, 'id_usuario');
+        return $this->belongsTo(User::class , 'id_usuario');
     }
 
     /**
@@ -41,6 +41,14 @@ class Caso extends Model
      */
     public function documentacion()
     {
-        return $this->hasMany(DocumentacionCaso::class, 'id_caso');
+        return $this->hasMany(DocumentacionCaso::class , 'id_caso');
+    }
+
+    /**
+     * Obtener la recepción de equipo asociada al caso.
+     */
+    public function recepcionDeEquipo()
+    {
+        return $this->hasOne(RecepcionDeEquipo::class , 'id_caso');
     }
 }

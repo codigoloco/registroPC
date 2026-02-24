@@ -29,11 +29,16 @@ Route::middleware([
         }
         );
 
-        // Páginas de listado (permitir ver por recepcionista, supervisor, administrador)
-        Route::middleware('role:recepcionista,supervisor,administrador')->group(function () {
-            Route::get('/gestion-clientes', [\App\Http\Controllers\ClienteController::class , 'index'])->name('gestion-clientes');
+        // Páginas de listado (permitir ver por recepcionista, supervisor, administrador, y soporte)
+        Route::middleware('role:recepcionista,supervisor,administrador,soporte')->group(function () {
             Route::get('/gestion-equipos', [\App\Http\Controllers\EquipoController::class , 'index'])->name('gestion-equipos');
             Route::get('/gestion-casos', [\App\Http\Controllers\CasoController::class , 'index'])->name('gestion-casos');
+        }
+        );
+
+        Route::middleware('role:recepcionista,supervisor,administrador')->group(function () {
+            Route::get('/gestion-clientes', [\App\Http\Controllers\ClienteController::class , 'index'])->name('gestion-clientes');
+            Route::get('/clientes/search/{cedula}', [\App\Http\Controllers\ClienteController::class , 'findById'])->name('clientes.search');
         }
         );
 
@@ -62,7 +67,7 @@ Route::middleware([
         Route::get('/casos/search/{id}', [\App\Http\Controllers\CasoController::class , 'findById'])->name('casos.search');
         Route::get('/casos/disponibles', [\App\Http\Controllers\CasoController::class , 'getCasosDisponibles'])->name('casos.disponibles');
         Route::get('/tecnicos/all', [\App\Http\Controllers\CasoController::class , 'getTecnicos'])->name('tecnicos.all');
-        Route::post('/casos/asignar-tecnico', [\App\Http\Controllers\CasoController::class , 'asignarTecnico'])->name('casos.asignar-tecnico')->middleware('role:administrador,supervisor');
+        Route::post('/casos/asignar-tecnico', [\App\Http\Controllers\CasoController::class , 'asignarTecnico'])->name('casos.asignar-tecnico')->middleware('role:supervisor');
         Route::get('/casos/asignados', [\App\Http\Controllers\CasoController::class , 'getCasosAsignados'])->name('casos.asignados');
         Route::get('/piezas', [\App\Http\Controllers\CasoController::class , 'getPiezas'])->name('piezas.index');
 
@@ -74,5 +79,8 @@ Route::middleware([
         Route::get('/salida/all', [\App\Http\Controllers\RecepcionController::class , 'getSalidasPaged'])->name('salida.all');
         // reporte imprimible / PDF de todas las recepciones de equipo
         Route::get('/recepcion/pdf', [\App\Http\Controllers\RecepcionController::class , 'pdf'])->name('recepcion.pdf');
+        Route::get('/recepcion/{id}/pdf', [\App\Http\Controllers\RecepcionController::class , 'pdfIndividual'])->name('recepcion.pdf.individual');
         // PDF imprimible de las salidas de equipo
-        Route::get('/salidas/pdf', [\App\Http\Controllers\RecepcionController::class , 'pdfSalidas'])->name('salidas.pdf');    });
+        Route::get('/salidas/pdf', [\App\Http\Controllers\RecepcionController::class , 'pdfSalidas'])->name('salidas.pdf');
+        Route::get('/salida/{id}/pdf', [\App\Http\Controllers\RecepcionController::class , 'pdfIndividualSalida'])->name('salida.pdf.individual');
+    });

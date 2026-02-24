@@ -18,7 +18,7 @@ class CasoController extends Controller
      */
     public function index()
     {
-        $casos = Caso::with(['cliente', 'tecnico'])->orderBy('id', 'desc')->paginate(10);
+        $casos = Caso::with(['cliente', 'recepcionDeEquipo.tecnicoAsignado'])->orderBy('id', 'desc')->paginate(10);
         return view('gestion-casos', compact('casos'));
     }
 
@@ -252,9 +252,9 @@ class CasoController extends Controller
      */
     public function asignarTecnico(Request $request)
     {
-        // restricción: sólo administradores pueden reasignar técnicos
+        // restricción: sólo supervisores pueden reasignar/asignar técnicos
         $user = Auth::user();
-        if ($user && $user->rol && strtolower($user->rol->nombre) === 'soporte') {
+        if (!$user || !$user->rol || strtolower($user->rol->nombre) !== 'supervisor') {
             abort(403);
         }
         $request->validate([
