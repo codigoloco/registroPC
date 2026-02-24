@@ -20,27 +20,18 @@
                         {{ __('Modificar Clientes') }}
                     </x-button>
                 @endif
-
-                <x-button @click="showModalModificarClientes = true"
-                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('Modificar Clientes') }}
-                </x-button>
             </div>
 
             <!-- Tabla de Clientes Registrados -->
-            <x-data-table
-                title="Listado de Clientes Registrados"
-                :headers="[
-                    ['label' => 'Cédula / RIF'],
-                    ['label' => 'Nombre Completo'],
-                    ['label' => 'Dirección'],
-                    ['label' => 'Tipo'],
-                    ['label' => 'Registro'],
-                ]"
-                :paginator="$clientes"
-                search-placeholder="Buscar clientes..."
-                empty-message="No hay clientes registrados actualmente."
-            >
+            <x-data-table title="Listado de Clientes Registrados" :headers="[
+        ['label' => 'Cédula / RIF'],
+        ['label' => 'Nombre Completo'],
+        ['label' => 'Dirección'],
+        ['label' => 'Tipo'],
+        ['label' => 'Registro'],
+    ]"
+                :paginator="$clientes" search-placeholder="Buscar clientes..."
+                empty-message="No hay clientes registrados actualmente.">
                 <x-slot:icon>
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -60,10 +51,10 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                                    @if($cliente->tipo_cliente == 'natural') bg-green-100 text-green-800 
-                                    @elseif($cliente->tipo_cliente == 'juridico') bg-purple-100 text-purple-800
-                                    @else bg-yellow-100 text-yellow-800
-                                    @endif">
+                                            @if($cliente->tipo_cliente == 'natural') bg-green-100 text-green-800 
+                                            @elseif($cliente->tipo_cliente == 'juridico') bg-purple-100 text-purple-800
+                                            @else bg-yellow-100 text-yellow-800
+                                            @endif">
                                 {{ ucfirst($cliente->tipo_cliente) }}
                             </span>
                         </td>
@@ -80,7 +71,6 @@
                 <x-modificar-clientes />
             @endif
 
-            <x-modificar-clientes />
 
         </div>
     </div>
