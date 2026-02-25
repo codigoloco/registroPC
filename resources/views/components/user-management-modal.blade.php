@@ -77,7 +77,7 @@
             </button>
         </div>
 
-        <form action="{{ route('users.update') }}" method="POST">
+        <form id="modificarUsuarioForm" action="{{ route('users.update') }}" method="POST">
             @csrf
             <input type="hidden" name="email" :value="user.email">
             <div class="p-8 space-y-8">

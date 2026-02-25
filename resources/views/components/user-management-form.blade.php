@@ -1,6 +1,7 @@
 @props(['roles'])
 <div>
     <!-- Sección: Consultar Usuario -->
+    <div id="editMainError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded relative" style="display:none;"></div>
     <div>
         <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 border-b dark:border-gray-700 pb-2">
             {{ __('Consultar Usuario') }}
@@ -84,7 +85,8 @@
                 <div x-data="{ show: false }">
                     <x-label value="Nueva Contraseña (Opcional)" class="mb-1" />
                     <div class="relative">
-                        <x-input ::type="show ? 'text' : 'password'" name="password" placeholder="********" class="w-full pr-10" />
+                        <x-input ::type="show ? 'text' : 'password'" name="password" placeholder="********" class="w-full pr-10" x-imask="{mask:/^.*$/}" />
+                        <span id="editPwdMsg" class="text-red-500 text-xs absolute top-0 right-0 mt-2 mr-10" style="display:none;">Mínimo 8 caracteres</span>
                         <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                             <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -102,7 +104,8 @@
                 <div x-data="{ show: false }">
                     <x-label value="Confirmar Nueva Contraseña" class="mb-1" />
                     <div class="relative">
-                        <x-input ::type="show ? 'text' : 'password'" name="password_confirmation" placeholder="********" class="w-full pr-10" />
+                        <x-input ::type="show ? 'text' : 'password'" name="password_confirmation" placeholder="********" class="w-full pr-10" x-imask="{mask:/^.*$/}" />
+                        <span id="editConfirmMsg" class="text-red-500 text-xs absolute top-0 right-0 mt-2 mr-10" style="display:none;">Mínimo 8 caracteres</span>
                         <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                             <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
