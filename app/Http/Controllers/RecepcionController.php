@@ -137,9 +137,11 @@ class RecepcionController extends Controller
             $q->where('nombre', 'soporte');
         })
             ->where('id_estatus', 1) // Activo
-            ->withCount(['casos' => function ($q) {
-            $q->whereIn('estatus', ['espera', 'asignado']);
-        }])
+            ->withCount([
+                'casos' => function ($q) {
+                    $q->whereIn('estatus', ['espera', 'asignado']);
+                }
+            ])
             ->orderBy('casos_count', 'asc')
             ->first();
 
@@ -191,24 +193,37 @@ class RecepcionController extends Controller
         ]);
 
         $recepcion = RecepcionDeEquipo::where('id_caso', $request->id_caso)->firstOrFail();
+        $caso = Caso::findOrFail($request->id_caso);
+        $estadoInicialCaso = $caso->toArray();
 
-        EntregaDeEquipo::create([
-            'id_caso' => $recepcion->id_caso,
-            'id_equipo' => $recepcion->id_equipo,
-            'id_usuario_entrega' => Auth::id(),
-            'deposito' => strtolower($request->deposito), // Normalizamos a minúsculas según el enum de la migración
-        ]);
+        DB::beginTransaction();
+        try {
+            EntregaDeEquipo::create([
+                'id_caso' => $recepcion->id_caso,
+                'id_equipo' => $recepcion->id_equipo,
+                'id_usuario_entrega' => Auth::id(),
+                'deposito' => strtolower($request->deposito),
+            ]);
 
-        // Guardar auditoria
-        Auditoria::create([
-            'id_usuario' => Auth::id(),
-            'id_caso' => $recepcion->id_caso,
-            'sentencia' => 'INSERT_SALIDA',
-            'estado_final' => json_encode(['nota' => 'Salida de equipo registrada.', 'deposito' => $request->deposito]),
-            'ip' => $request->ip(),
-        ]);
+            // Actualizar estatus del caso a entregado
+            $caso->update(['estatus' => 'entregado']);
 
-        return redirect()->back()->with('success', 'Salida de equipo registrada exitosamente.');
+            // Guardar auditoria mejorada
+            Auditoria::create([
+                'id_usuario' => Auth::id(),
+                'id_caso' => $recepcion->id_caso,
+                'sentencia' => 'INSERT_SALIDA_CON_CIERRE',
+                'estado_inicial' => json_encode($estadoInicialCaso),
+                'estado_final' => json_encode(['nota' => 'Salida registrada. Caso marcado como ENTREGADO.', 'datos' => $caso->fresh()->toArray()]),
+                'ip' => $request->ip(),
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Salida de equipo registrada y caso marcado como Entregado.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al registrar salida: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -272,8 +287,7 @@ class RecepcionController extends Controller
         if ($entrega) {
             $data['id_usuario_entrega'] = $entrega->id_usuario_entrega;
             $data['deposito'] = ucfirst($entrega->deposito); // Capitalizado para hacer match con select (Tecnico o Deposito)
-        }
-        else {
+        } else {
             $data['deposito'] = 'Sin entregar';
         }
 

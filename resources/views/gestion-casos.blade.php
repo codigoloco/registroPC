@@ -6,8 +6,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"
-            x-data="{
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" x-data="{
                 showModal: false,
                 showDocumentarModal: false,
                 showRegistrarCasoModal: false,
@@ -61,20 +60,16 @@
             </div>
 
             <!-- Tabla de Casos Registrados -->
-            <x-data-table
-                title="Listado de Casos Registrados"
-                :headers="[
-                    ['label' => 'ID'],
-                    ['label' => 'Cliente'],
-                    ['label' => 'Técnico'],
-                    ['label' => 'Descripción Falla'],
-                    ['label' => 'Estatus'],
-                    ['label' => 'Fecha'],
-                ]"
-                :paginator="$casos"
-                search-placeholder="Buscar casos..."
-                empty-message="No hay casos registrados actualmente."
-            >
+            <x-data-table title="Listado de Casos Registrados" :headers="[
+        ['label' => 'ID'],
+        ['label' => 'Cliente'],
+        ['label' => 'Técnico'],
+        ['label' => 'Descripción Falla'],
+        ['label' => 'Estatus'],
+        ['label' => 'Fecha'],
+    ]"
+                :paginator="$casos" search-placeholder="Buscar casos..."
+                empty-message="No hay casos registrados actualmente.">
                 <x-slot:icon>
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -90,18 +85,18 @@
                             {{ $caso->cliente->nombre ?? 'N/A' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-                            {{ $caso->recepcionDeEquipo->tecnicoAsignado->name ?? 'N/A' }}
+                            {{ $caso->tecnico->name ?? 'N/A' }}
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300 max-w-xs truncate">
                             {{ $caso->descripcion_falla }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                                    @if($caso->estatus == 'espera') bg-yellow-100 text-yellow-800 
-                                    @elseif($caso->estatus == 'asignado') bg-blue-100 text-blue-800
-                                    @elseif($caso->estatus == 'reparado') bg-green-100 text-green-800
-                                    @elseif($caso->estatus == 'entregado') bg-gray-100 text-gray-800
-                                    @endif">
+                                        @if($caso->estatus == 'espera') bg-yellow-100 text-yellow-800 
+                                        @elseif($caso->estatus == 'asignado') bg-blue-100 text-blue-800
+                                        @elseif($caso->estatus == 'reparado') bg-green-100 text-green-800
+                                        @elseif($caso->estatus == 'entregado') bg-gray-100 text-gray-800
+                                        @endif">
                                 {{ ucfirst($caso->estatus) }}
                             </span>
                         </td>
