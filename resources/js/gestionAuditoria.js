@@ -84,9 +84,19 @@ document.addEventListener('alpine:init', () => {
                 try { return JSON.parse(val); } catch (e) { return {}; }
             };
 
-            const formatValue = (val) => {
+            const formatValue = (val, key = null) => {
                 if (val === undefined || val === null) return '<span class="italic opacity-50 text-gray-400 font-sans">Vacío</span>';
                 if (typeof val === 'object') return `<pre class="text-[9px] leading-tight">${JSON.stringify(val, null, 2)}</pre>`;
+                
+                if (key === 'id_rol') {
+                    const roles = {1: 'Administrador', 2: 'Soporte', 3: 'Recepcionista', 4: 'Supervisor'};
+                    return roles[val] ? `${roles[val]} (ID: ${val})` : val;
+                }
+                if (key === 'id_estatus') {
+                    const estatus = {1: 'Activo', 2: 'Inactivo', 3: 'Vacaciones', 4: 'Jubilado'};
+                    return estatus[val] ? `${estatus[val]} (ID: ${val})` : val;
+                }
+                
                 return val;
             };
 
@@ -123,17 +133,17 @@ document.addEventListener('alpine:init', () => {
                         html += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                             <td class="px-4 py-2 font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-900/50 capitalize">${key.replace(/_/g, ' ')}</td>
                             <td class="px-4 py-2 font-mono text-green-700 dark:text-green-400 break-all bg-green-50/20 dark:bg-green-900/10">
-                                ${formatValue(valFinal)}
+                                ${formatValue(valFinal, key)}
                             </td>
                         </tr>`;
                     } else {
                         html += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                             <td class="px-4 py-2 font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-900/50 capitalize">${key.replace(/_/g, ' ')}</td>
                             <td class="px-4 py-2 font-mono text-red-600 dark:text-red-400 break-all bg-red-50/30 dark:bg-red-900/10">
-                                ${formatValue(valInit)}
+                                ${formatValue(valInit, key)}
                             </td>
                             <td class="px-4 py-2 font-mono text-green-600 dark:text-green-400 break-all bg-green-50/30 dark:bg-green-900/10">
-                                ${formatValue(valFinal)}
+                                ${formatValue(valFinal, key)}
                             </td>
                         </tr>`;
                     }

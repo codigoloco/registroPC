@@ -18,7 +18,7 @@ class CasoController extends Controller
      */
     public function index()
     {
-        $casos = Caso::with(['cliente', 'recepcionDeEquipo.tecnicoAsignado'])->orderBy('id', 'desc')->paginate(10);
+        $casos = Caso::with(['cliente', 'tecnico', 'recepcionDeEquipo.tecnicoAsignado'])->orderBy('id', 'desc')->paginate(10);
         return view('gestion-casos', compact('casos'));
     }
 
@@ -61,8 +61,7 @@ class CasoController extends Controller
             ]);
 
             return redirect()->back()->with('success', "Caso #{$caso->id} creado exitosamente.");
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al crear caso: ' . $e->getMessage());
         }
     }
@@ -110,8 +109,7 @@ class CasoController extends Controller
             DB::commit();
 
             return redirect()->back()->with('success', 'Caso documentado exitosamente.');
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error al documentar caso: ' . $e->getMessage());
         }
@@ -132,11 +130,9 @@ class CasoController extends Controller
             if (!$casoCheck || $casoCheck->id_usuario !== $user->id) {
                 abort(403);
             }
-        }
-        elseif ($rol === 'recepcionista') {
-        // permitido
-        }
-        else {
+        } elseif ($rol === 'recepcionista') {
+            // permitido
+        } else {
             abort(403);
         }
 
@@ -170,8 +166,7 @@ class CasoController extends Controller
             ]);
 
             return redirect()->back()->with('success', "Caso #{$caso->id} actualizado exitosamente.");
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al actualizar caso: ' . $e->getMessage());
         }
     }
@@ -203,9 +198,9 @@ class CasoController extends Controller
     {
         return response()->json(
             Caso::with('cliente')
-            ->where('estatus', '!=', 'entregado')
-            ->orderBy('id', 'desc')
-            ->get()
+                ->where('estatus', '!=', 'entregado')
+                ->orderBy('id', 'desc')
+                ->get()
         );
     }
 
@@ -216,10 +211,10 @@ class CasoController extends Controller
     {
         return response()->json(
             User::whereHas('rol', function ($q) {
-            $q->where('nombre', 'soporte');
-        })
-            ->where('id_estatus', 1) // Asumiendo 1 es activo
-            ->get()
+                $q->where('nombre', 'soporte');
+            })
+                ->where('id_estatus', 1) // Asumiendo 1 es activo
+                ->get()
         );
     }
 
@@ -282,8 +277,7 @@ class CasoController extends Controller
             ]);
 
             return redirect()->back()->with('success', "Técnico asignado exitosamente al Caso #{$caso->id}.");
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al asignar técnico: ' . $e->getMessage());
         }
     }
