@@ -173,7 +173,13 @@
         <tr>
             <td>{{ strtoupper($recepcion->caso->cliente->nombre . ' ' . $recepcion->caso->cliente->apellido) }}</td>
             <td style="text-transform: uppercase;">{{ $recepcion->caso->cliente->tipo_cliente ?? 'V' }}-{{ $recepcion->caso->cliente->cedula }}</td>
-            <td>{{ $recepcion->caso->cliente->telefono_1 }}{{ $recepcion->caso->cliente->telefono_2 ? ' / ' . $recepcion->caso->cliente->telefono_2 : '' }} /</td>
+            <td>
+                @if($recepcion->caso->cliente->contactos->count() > 0)
+                    {{ $recepcion->caso->cliente->contactos->pluck('telefono_cliente')->implode(' / ') }}
+                @else
+                    N/A
+                @endif
+            </td>
         </tr>
     </table>
 

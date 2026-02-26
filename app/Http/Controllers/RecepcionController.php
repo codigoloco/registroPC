@@ -53,7 +53,7 @@ class RecepcionController extends Controller
     public function pdfIndividual($id)
     {
         $recepcion = RecepcionDeEquipo::with([
-            'caso.cliente',
+            'caso.cliente.contactos',
             'equipo.modelo',
             'equipo.tipo',
             'usuarioRecepcion',
@@ -85,7 +85,7 @@ class RecepcionController extends Controller
     public function pdfIndividualSalida($id)
     {
         $salida = EntregaDeEquipo::with([
-            'caso.cliente',
+            'caso.cliente.contactos',
             'equipo.modelo',
             'equipo.tipo',
             'usuarioEntrega',
