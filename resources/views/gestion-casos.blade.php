@@ -45,18 +45,22 @@
                     {{ __('Consultar / Modificar Caso') }}
                 </x-button>
 
-                <x-button @click="showDocumentarModal = true"
-                    class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
-                    {{ __('Documentar Caso') }}
-                </x-button>
+                @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'soporte')
+                    <x-button @click="showDocumentarModal = true"
+                        class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 border-blue-600 focus:ring-blue-500 text-lg px-8 py-3">
+                        {{ __('Documentar Caso') }}
+                    </x-button>
+                @endif
 
-                <!-- botón para mostrar casos asignados al técnico o todos si es admin -->
-                <x-button @click="showAssignedCasesModal = true; $dispatch('refresh-assigned-cases')"
-                    class="bg-green-600 hover:bg-green-700 active:bg-green-800 border-green-600 focus:ring-green-500 text-lg px-8 py-3 flex items-center">
-                    {{ __('Mis Casos') }}
-                    <span x-show="assignedCount > 0" x-text="assignedCount"
-                        class="ml-2 inline-block bg-white text-green-600 text-xs font-semibold px-2 py-0.5 rounded-full"></span>
-                </x-button>
+                @if(Auth::user()->rol && strtolower(Auth::user()->rol->nombre) === 'soporte')
+                    <!-- botón para mostrar casos asignados al técnico o todos si es admin -->
+                    <x-button @click="showAssignedCasesModal = true; $dispatch('refresh-assigned-cases')"
+                        class="bg-green-600 hover:bg-green-700 active:bg-green-800 border-green-600 focus:ring-green-500 text-lg px-8 py-3 flex items-center">
+                        {{ __('Mis Casos') }}
+                        <span x-show="assignedCount > 0" x-text="assignedCount"
+                            class="ml-2 inline-block bg-white text-green-600 text-xs font-semibold px-2 py-0.5 rounded-full"></span>
+                    </x-button>
+                @endif
             </div>
 
             <!-- Tabla de Casos Registrados -->
@@ -92,11 +96,11 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                                        @if($caso->estatus == 'espera') bg-yellow-100 text-yellow-800 
-                                        @elseif($caso->estatus == 'asignado') bg-blue-100 text-blue-800
-                                        @elseif($caso->estatus == 'reparado') bg-green-100 text-green-800
-                                        @elseif($caso->estatus == 'entregado') bg-gray-100 text-gray-800
-                                        @endif">
+                                                    @if($caso->estatus == 'espera') bg-yellow-100 text-yellow-800 
+                                                    @elseif($caso->estatus == 'asignado') bg-blue-100 text-blue-800
+                                                    @elseif($caso->estatus == 'reparado') bg-green-100 text-green-800
+                                                    @elseif($caso->estatus == 'entregado') bg-gray-100 text-gray-800
+                                                    @endif">
                                 {{ ucfirst($caso->estatus) }}
                             </span>
                         </td>
